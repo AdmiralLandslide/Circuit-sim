@@ -1,4 +1,5 @@
 
+import com.sun.swing.internal.plaf.synth.resources.synth_sv;
 import com.sun.tools.javac.util.Paths;
 
 import javax.swing.*;
@@ -16,20 +17,21 @@ public class Canvas extends JPanel {
     private double scale = 1;
     private static Double MAX_SCALE = 10.0;
     private static Double MIN_SCALE = 0.47;
-    private ArrayList<Component> components = new ArrayList<Component>();
+    static public ArrayList<Component> components = new ArrayList<Component>();
+    private ArrayList<Coordinate> coordList = new ArrayList<Coordinate>();
     public Component mouseComponent = null;
     boolean clicked = false;
     static int x2;
     static int y2;
     static String line = "hi";
+    AdjacencyLists Adj1 = new AdjacencyLists(coordList.size());
 
     public Canvas() {
         super();
         JButton push4 = new JButton("ro-potate");
+        push4.setSize(70, 20);
+        push4.setLocation(0, 0);
         add(push4);
-        push4.setMaximumSize(new Dimension(50, 50));
-        push4.setMinimumSize(new Dimension(50, 50));
-        push4.setBounds(400, 400, 10, 10);
         push4.addActionListener(
                 (new ActionListener() {
                     @Override
@@ -48,13 +50,15 @@ public class Canvas extends JPanel {
                 })
         );
         JButton push5 = new JButton("mooose");
+        push5.setSize(70, 20);
+        push5.setLocation(0, 20);
         add(push5);
         push5.addActionListener(
                 (new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent actionEvent) {
                         Main.lastButtonPressed = null;
-                        remove(mouseComponent);
+                        if (mouseComponent != null) remove(mouseComponent);
                         mouseComponent = null;
                         repaint();
                         clicked = false;
@@ -64,17 +68,34 @@ public class Canvas extends JPanel {
                 })
         );
 
-        JButton push6 = new JButton("run");
+        JButton push6 = new JButton("pun");
+        push6.setSize(70, 20);
+        push6.setLocation(0, 40);
         add(push6);
         push6.addActionListener(
                 (new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent actionEvent) {
-                        listData();
+//                        listData();
 
                     }
                 })
         );
+
+        JButton push7 = new JButton("rave");
+        push7.setSize(70, 20);
+        push7.setLocation(0, 60);
+        add(push7);
+        push7.addActionListener(
+                (new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent actionEvent) {
+                        serialize(components);
+
+                    }
+                })
+        );
+
 
 //       Canvas.Layout(GridBagLayout);
         //generate lines
@@ -302,6 +323,9 @@ public class Canvas extends JPanel {
         if (Y3.length() < 2) { Y3 = "0" + Y3;}
 
 
+
+
+
         File file = new File("/Users/Ruben/Desktop/data.txt");
         Writer writer = null;
         try{ PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(file, true)));
@@ -321,52 +345,88 @@ public class Canvas extends JPanel {
         }
     }
 
-    private void listData() {
-        String file = new String("/Users/Ruben/Desktop/data.txt");
-        try {
-            readToStr(file);
-        }catch (IOException e) {
-            e.printStackTrace();
-        }
-        findCoords();
-
-    }
-
-    private void readToStr(String file) throws IOException {
-        BufferedReader reader = new BufferedReader( new FileReader (file));
-//        String line = "hi";
-        StringBuilder stringBuilder = new StringBuilder();
-        String ls = System.getProperty("line.separator");
-
+    private void serialize(ArrayList comp) {
         try
         {
-        while( ( line = reader.readLine() ) != null ) {
-            stringBuilder.append( line );
-            stringBuilder.append( ls );
-            System.out.println(line);
+            FileOutputStream fileOut = new FileOutputStream("/Users/Ruben/Desktop/serialized.ser");
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            out.writeObject(comp);
+            out.close();
+            fileOut.close();
+            System.out.printf("Serialized data is saved in /Users/Ruben/Desktop/serialized.ser");
+        }catch(IOException i)
+        {
+            i.printStackTrace();
         }
-
-
-
-        }catch (IOException e) {
-        e.printStackTrace();
-        }
-        finally {
-        if (reader != null) try { reader.close(); } catch (IOException ignore) {}
-        }
-
-//        return stringBuilder.toString();
     }
+
+
+
+//    private void listData() {
+//        String file = new String("/Users/Ruben/Desktop/data.txt");
+//        try {
+//            readToStr(file);
+//        }catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        findCoords();
+//        createList();
+//        findAllPaths();
+//        printList();
+//        for (int i=1; i<4; i++) {
+//            System.out.println(coordList.get(i));
+//        }
+//    }
+
+//    private void readToStr(String file) throws IOException {
+//        BufferedReader reader = new BufferedReader( new FileReader (file));
+//        String line = "hi";
+//        StringBuilder stringBuilder = new StringBuilder();
+//        String ls = System.getProperty("line.separator");
+//
+//        try
+//        {
+//        while( ( line = reader.readLine() ) != null ) {
+//            stringBuilder.append( line );
+//            stringBuilder.append(ls);
+//        }
+//
+//
+//
+//        }catch (IOException e) {
+//        e.printStackTrace();
+//        }
+//        finally {
+//        if (reader != null) try { reader.close(); } catch (IOException ignore) {}
+//        }
+//
+//        return stringBuilder.toString();
+//    }
 
     private void findCoords() {
-        String string = "";
         for(int i=1; i<3; i++){
-            string = (line.substring(1*i-1, i+1) + line.substring(3*i, 3*i+2));
-            System.out.println(string);
+            if (coordList.contains(new Coordinate(components.get(1).getX(),components.get(1).getY())))
+//            if (Integer.toString(components.get(1).getX()) + Integer.toString(components.get(1).getY()) == "") {
+                coordList.add(new Coordinate(components.get(1).getX(),components.get(1).getY()));
+
+            }
+//            if (coordList.contains(line.substring(10*i, 15*i)) == false) {
+//                coordList.add(line.substring(10*i-1, 15*i-1));
+//            }
         }
 
-
+    private void createList() {
+//        AdjacencyLists Adj1 = new AdjacencyLists(coordList.size());
+        for (int i = 1; i<coordList.size(); i++) {
+            Adj1.addEdge(Integer.parseInt(coordList.get(i)), Integer.parseInt(coordList.get(i+1)));
+            Adj1.addEdge(Integer.parseInt(coordList.get(i + 1)), Integer.parseInt(coordList.get(i)));
+        }
     }
 
+    private void findAllPaths() {
+    }
 
+    private void printList() {
+        Adj1.printList();
+    }
 }

@@ -13,8 +13,13 @@ public class AdjacencyLists {
         for (int i = 0; i < n; i++)
             adj[i] = new Stack<Integer>();
     }
-    void addEdge(int i, int j) {
+
+    public void addEdge(int i, int j) {
         adj[i].add(j);
+    }
+
+    public void printList() {
+        System.out.println(adj[1]);
     }
 
 }

@@ -7,6 +7,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
+import java.util.ArrayList;
 
 /**
  * Created by Ruben on 21/01/2014.
@@ -21,7 +22,7 @@ public class Main {
     static JPanel panel3;
     static String[] names = {"WIRE", "RESISTOR", "AMMETER", "VOLTMETER", "BULB", "VARIABLE RESISTOR", "CELL", "LDR", "LED", "CAPACITOR", "SWITCH", "SPDT"};
     static String[] shortName = {"WRE", "RST", "AMT", "VLT", "BLB", "VAR", "CEL", "LDR", "LED", "CAP", "SWT", "SPD"};
-    static Boolean componentSelected = false;
+//    static Boolean componentSelected = false;
     public static String lastButtonPressed = null;
     public static int rotation = 1;
     static Canvas canvas1 = null;
@@ -94,7 +95,7 @@ public class Main {
         push2.setContentAreaFilled(false);
         push2.setBorderPainted(false);
         push2.setRolloverEnabled(false);
-        JButton push3 =  new JButton("Back");
+        JButton push3 =  new JButton("Thwack");
         push3.addActionListener(
                 new ActionListener() {
                     @Override
@@ -110,12 +111,26 @@ public class Main {
         push3.setBorderPainted(false);
         push3.setRolloverEnabled(false);
 
+        JButton push7 = new JButton("O-Pope-n");
+        panel3.add(push7);
+        push7.addActionListener(
+                (new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent actionEvent) {
+                        deserialize();
+
+                    }
+                })
+        );
+
+
         JPanel CompCanvas = new JPanel();
         JPanel spanel3 = new JPanel();
         spanel3.setBackground(Color.white);
         CompCanvas.setBackground(Color.white);
         CompCanvas.setVisible(true);
         canvas1 = new Canvas();
+        canvas1.setLayout(null);
 
         panel2.setLayout(new BorderLayout());
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
@@ -148,16 +163,13 @@ public class Main {
                         public void actionPerformed(ActionEvent actionEvent) {
                             Main.lastButtonPressed = shortName[s2];
                             String component = lastButtonPressed;
-
                             if (canvas1.mouseComponent != null) {
                                 canvas1.remove(canvas1.mouseComponent);
                                 canvas1.repaint();
                             }
-
                             if (component.equals("WRE")) {
-                            //    canvas1.mouseComponent = new Wire(Main.rotation, 0,0,0,0);
-                          }
-                              else if (component.equals("RST")) {
+                                canvas1.mouseComponent = new Wire(Main.rotation, 0, 0, 0, 0);
+                            }  else if (component.equals("RST")) {
                                 canvas1.mouseComponent = new Resistor(Main.rotation, 0, 0);
                             } else if (component.equals("AMT")) {
                                 canvas1.mouseComponent = new Ammeter(Main.rotation, 0,0);
@@ -200,9 +212,38 @@ public class Main {
                     }
             );
         }
+    }
 
+    public static void deserialize() {
+        int x;
+        try
+        {
+            FileInputStream fileIn = new FileInputStream("/Users/Ruben/Desktop/serialized.ser");
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            Canvas.components = (ArrayList) in.readObject();
 
-        AdjacencyLists AdjList1 = new AdjacencyLists(9);
+            x = Canvas.components.size();
+            in.close();
+            fileIn.close();
+        }catch(IOException i)
+        {
+            i.printStackTrace();
+            return;
+        }catch(ClassNotFoundException c)
+        {
+            System.out.println("String class not found");
+            c.printStackTrace();
+            return;
+        }
+        System.out.println("Deserialized String...");
+        panel3.setVisible(false);
+        panel2.setVisible(true);
+        for (int i=0; i<x; i++) {
+            Canvas.components.get(i).setLocation((Canvas.components.get(i).getX()), Canvas.components.get(i).getY());
+            canvas1.add(Canvas.components.get(i));
+        }
+
 
     }
+
 }
