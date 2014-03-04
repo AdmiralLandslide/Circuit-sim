@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
@@ -11,15 +12,16 @@ public class AdjacencyLists {
         n = n0;
         adj = (List<Integer>[])new List[n];
         for (int i = 0; i < n; i++)
-            adj[i] = new Stack<Integer>();
+            adj[i] = new ArrayList<Integer>();
     }
-
     public void addEdge(int i, int j) {
         adj[i].add(j);
     }
 
-    public void printList() {
-        System.out.println(adj[1]);
+    public void
+    printList() {
+        for (int i=0; i<Canvas.coordListSize; i++)
+        System.out.println(adj[i]);
     }
 
 }

@@ -18,11 +18,13 @@ public class Canvas extends JPanel {
     private static Double MAX_SCALE = 10.0;
     private static Double MIN_SCALE = 0.47;
     static public ArrayList<Component> components = new ArrayList<Component>();
-    private ArrayList<Coordinate> coordList = new ArrayList<Coordinate>();
+//    private ArrayList<Coordinate> coordList = new ArrayList<Coordinate>();
+    CoordList coordList;
     public Component mouseComponent = null;
     boolean clicked = false;
     static int x2;
     static int y2;
+    public static int coordListSize;
     static String line = "hi";
     AdjacencyLists Adj1 = new AdjacencyLists(coordList.size());
 
@@ -76,7 +78,7 @@ public class Canvas extends JPanel {
                 (new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent actionEvent) {
-//                        listData();
+                        listData();
 
                     }
                 })
@@ -147,23 +149,13 @@ public class Canvas extends JPanel {
                     if (clicked == false) {
                         x2 = x;
                         y2 = y;
-                        System.out.println(x2);
-                        System.out.println(y2);
-                        System.out.println();
                         clicked = true;
                         return;
                     }
                     if (clicked == true) {
-                        System.out.println(x);
-                        System.out.println(y);
-                        System.out.println(x2);
-                        System.out.println(y2);
-                        System.out.println();
                         component = new Wire(Main.rotation, x2, y2, x, y);
                         x2 = x;
                         y2 = y;
-//                        x = 0;
-//                        y = 0;
                     }
                 } else if (lst.equals("RST")) {
                     component = new Resistor(Main.rotation, x, y);
@@ -362,22 +354,64 @@ public class Canvas extends JPanel {
 
 
 
-//    private void listData() {
-//        String file = new String("/Users/Ruben/Desktop/data.txt");
-//        try {
-//            readToStr(file);
-//        }catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        findCoords();
+    private void listData() {
+        findCoords();
+        coordListSize = coordList.size();
+        printCoords();
+//        System.out.println(coordListSize);
+//        System.out.println(components.size());
 //        createList();
 //        findAllPaths();
 //        printList();
-//        for (int i=1; i<4; i++) {
+//        for (int i=0; i<components.size(); i++) {
 //            System.out.println(coordList.get(i));
 //        }
-//    }
+    }
 
+
+    private void findCoords() {
+        for(int i=0; i<components.size(); i++) {
+//            System.out.println(components.get(i).getX()+ " " + components.get(i).getY());
+                if (components.get(i).rotation % 2 == 1 ) {
+                    if (!coordList.containsCoord(components.get(i).getX()-100,components.get(i).getY())) {
+                        coordList.add(new Coordinate(components.get(i).getX()-100,components.get(i).getY()));
+                    }
+                    if (!coordList.contains(new Coordinate(components.get(i).getX()+100,components.get(i).getY()))) {
+                      coordList.add(new Coordinate(components.get(i).getX()+100,components.get(i).getY()));
+                    }
+                if (components.get(i).rotation % 2 == 0 ) {
+                    if (!coordList.contains(new Coordinate(components.get(i).getX(),components.get(i).getY()-100))) {
+                        coordList.add(new Coordinate(components.get(i).getX(),components.get(i).getY()-100));
+                    }
+                    if (!coordList.contains(new Coordinate(components.get(i).getX(),components.get(i).getY()+100))) {
+                        coordList.add(new Coordinate(components.get(i).getX(),components.get(i).getY()+100));
+                    }
+                }
+            }
+        }
+    }
+    private void printCoords() {
+        for (int i=0; i<coordListSize; i++) {
+            System.out.println(coordList.get(i).getX() + " " + coordList.get(i).getY());
+
+        }
+    }
+
+    private void createList() {
+        AdjacencyLists Adj1 = new AdjacencyLists(coordListSize);
+        for (int i = 0; i<coordList.size(); i++) {
+            Adj1.addEdge(coordList.indexOf(new Coordinate((components.get(i).getX()-100), components.get(i).getY())),
+                    coordList.indexOf(new Coordinate((components.get(i).getX()+100), components.get(i).getY())));
+            Adj1.addEdge(coordList.indexOf(new Coordinate((components.get(i).getX()+100), components.get(i).getY())),
+                    coordList.indexOf(new Coordinate((components.get(i).getX()-100), components.get(i).getY())));
+        }
+    }
+
+//    private void findAllPaths() {
+//    }
+    private void printList() {
+        Adj1.printList();
+    }
 //    private void readToStr(String file) throws IOException {
 //        BufferedReader reader = new BufferedReader( new FileReader (file));
 //        String line = "hi";
@@ -402,31 +436,4 @@ public class Canvas extends JPanel {
 //
 //        return stringBuilder.toString();
 //    }
-
-    private void findCoords() {
-        for(int i=1; i<3; i++){
-            if (coordList.contains(new Coordinate(components.get(1).getX(),components.get(1).getY())))
-//            if (Integer.toString(components.get(1).getX()) + Integer.toString(components.get(1).getY()) == "") {
-                coordList.add(new Coordinate(components.get(1).getX(),components.get(1).getY()));
-
-            }
-//            if (coordList.contains(line.substring(10*i, 15*i)) == false) {
-//                coordList.add(line.substring(10*i-1, 15*i-1));
-//            }
-        }
-
-    private void createList() {
-//        AdjacencyLists Adj1 = new AdjacencyLists(coordList.size());
-        for (int i = 1; i<coordList.size(); i++) {
-            Adj1.addEdge(Integer.parseInt(coordList.get(i)), Integer.parseInt(coordList.get(i+1)));
-            Adj1.addEdge(Integer.parseInt(coordList.get(i + 1)), Integer.parseInt(coordList.get(i)));
-        }
-    }
-
-    private void findAllPaths() {
-    }
-
-    private void printList() {
-        Adj1.printList();
-    }
 }
