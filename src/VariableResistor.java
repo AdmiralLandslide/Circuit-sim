@@ -7,7 +7,7 @@ public class VariableResistor extends Component {
 
 
     public VariableResistor(int rotation, int x, int y) {
-        super(rotation,x-100,y-100,200,200);
+        super(rotation,x-100,y-100,200,200,0,0);
 
     }
 

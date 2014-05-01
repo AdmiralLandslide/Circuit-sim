@@ -1,0 +1,282 @@
+<html>
+<head>
+<title>Main.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: rgb(0,0,0); font-weight: normal; font-style: normal; }
+.s0 { color: rgb(169,183,198); }
+.s1 { color: rgb(204,120,50); }
+.s2 { color: rgb(98,151,85); }
+.s3 { color: rgb(106,135,89); }
+.s4 { color: rgb(128,128,128); font-style: italic; }
+.s5 { color: rgb(128,128,128); }
+.s6 { color: rgb(104,151,187); }
+</style>
+</head>
+<BODY BGCOLOR="#2b2b2b">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#C0C0C0" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+Main.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+
+<span class="s0"> 
+</span><span class="s1">import </span><span class="s0">sun.management.resources.agent</span><span class="s1">;</span><span class="s0"> 
+</span><span class="s1">import </span><span class="s0">sun.security.provider.certpath.AdjacencyList</span><span class="s1">;</span><span class="s0"> 
+ 
+</span><span class="s1">import </span><span class="s0">javax.swing.*</span><span class="s1">;</span><span class="s0"> 
+</span><span class="s1">import </span><span class="s0">java.awt.*</span><span class="s1">;</span><span class="s0"> 
+</span><span class="s1">import </span><span class="s0">java.awt.event.ActionEvent</span><span class="s1">;</span><span class="s0"> 
+</span><span class="s1">import </span><span class="s0">java.awt.event.ActionListener</span><span class="s1">;</span><span class="s0"> 
+</span><span class="s1">import </span><span class="s0">java.io.*</span><span class="s1">;</span><span class="s0"> 
+</span><span class="s1">import </span><span class="s0">java.util.ArrayList</span><span class="s1">;</span><span class="s0"> 
+ 
+</span><span class="s2">/** 
+ * Created by Ruben on 21/01/2014. 
+ */</span><span class="s0"> 
+ 
+ 
+</span><span class="s1">public class </span><span class="s0">Main { 
+ 
+ 
+    </span><span class="s1">static </span><span class="s0">JFrame mainFrame</span><span class="s1">;</span><span class="s0"> 
+    </span><span class="s1">static </span><span class="s0">JPanel panel1</span><span class="s1">;</span><span class="s0"> 
+    </span><span class="s1">static </span><span class="s0">JPanel panel2</span><span class="s1">;</span><span class="s0"> 
+    </span><span class="s1">static </span><span class="s0">JPanel panel3</span><span class="s1">;</span><span class="s0"> 
+    </span><span class="s1">static </span><span class="s0">String[] names = {</span><span class="s3">&quot;WIRE&quot;</span><span class="s1">, </span><span class="s3">&quot;RESISTOR&quot;</span><span class="s1">, </span><span class="s3">&quot;AMMETER&quot;</span><span class="s1">, </span><span class="s3">&quot;VOLTMETER&quot;</span><span class="s1">, </span><span class="s3">&quot;BULB&quot;</span><span class="s1">, </span><span class="s3">&quot;VARIABLE RESISTOR&quot;</span><span class="s1">, </span><span class="s3">&quot;CELL&quot;</span><span class="s1">, </span><span class="s3">&quot;LDR&quot;</span><span class="s1">, </span><span class="s3">&quot;LED&quot;</span><span class="s4">/*, &quot;CAPACITOR&quot;, &quot;SWITCH&quot;, &quot;SPDT&quot;*/</span><span class="s0">}</span><span class="s1">;</span><span class="s0"> 
+    </span><span class="s1">static </span><span class="s0">String[] shortName = {</span><span class="s3">&quot;WRE&quot;</span><span class="s1">, </span><span class="s3">&quot;RST&quot;</span><span class="s1">, </span><span class="s3">&quot;AMT&quot;</span><span class="s1">, </span><span class="s3">&quot;VLT&quot;</span><span class="s1">, </span><span class="s3">&quot;BLB&quot;</span><span class="s1">, </span><span class="s3">&quot;VAR&quot;</span><span class="s1">, </span><span class="s3">&quot;CEL&quot;</span><span class="s1">, </span><span class="s3">&quot;LDR&quot;</span><span class="s1">, </span><span class="s3">&quot;LED&quot;</span><span class="s4">/*, &quot;CAP&quot;, &quot;SWT&quot;, &quot;SPD&quot;*/</span><span class="s0">}</span><span class="s1">;</span><span class="s0"> 
+</span><span class="s5">//    static Boolean componentSelected = false;</span><span class="s0"> 
+    </span><span class="s1">public static </span><span class="s0">String lastButtonPressed = </span><span class="s1">null;</span><span class="s0"> 
+    </span><span class="s1">public static int </span><span class="s0">rotation = </span><span class="s6">1</span><span class="s1">;</span><span class="s0"> 
+    </span><span class="s1">static </span><span class="s0">Canvas canvas1 = </span><span class="s1">null;</span><span class="s0"> 
+ 
+ 
+ 
+ 
+    </span><span class="s1">public static void </span><span class="s0">main(String[] args)</span><span class="s1">throws </span><span class="s0">IOException { 
+        init()</span><span class="s1">;</span><span class="s0"> 
+ 
+    } 
+    </span><span class="s1">public static void </span><span class="s0">init() </span><span class="s1">throws </span><span class="s0">IOException { 
+        mainFrame = </span><span class="s1">new </span><span class="s0">JFrame(</span><span class="s3">&quot;Circuit Sim&quot;</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+        mainFrame.setVisible(</span><span class="s1">true</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+        mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE)</span><span class="s1">;</span><span class="s0"> 
+        mainFrame.setExtendedState(JFrame.MAXIMIZED_BOTH)</span><span class="s1">;</span><span class="s0"> 
+        mainFrame.setLayout(</span><span class="s1">null</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+ 
+ 
+        panel1 = </span><span class="s1">new </span><span class="s0">JPanel()</span><span class="s1">;</span><span class="s0"> 
+        panel2 = </span><span class="s1">new </span><span class="s0">JPanel()</span><span class="s1">;</span><span class="s0"> 
+        panel3 = </span><span class="s1">new </span><span class="s0">JPanel()</span><span class="s1">;</span><span class="s0"> 
+        mainFrame.add(panel1)</span><span class="s1">;</span><span class="s0"> 
+        mainFrame.add(panel2)</span><span class="s1">;</span><span class="s0"> 
+        mainFrame.add(panel3)</span><span class="s1">;</span><span class="s0"> 
+        panel1.setBackground(Color.WHITE)</span><span class="s1">;</span><span class="s0"> 
+        panel1.setSize(mainFrame.getWidth()</span><span class="s1">, </span><span class="s0">mainFrame.getHeight())</span><span class="s1">;</span><span class="s0"> 
+        panel1.setLocation(</span><span class="s6">0</span><span class="s1">, </span><span class="s6">0</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+        panel2.setBackground(Color.WHITE)</span><span class="s1">;</span><span class="s0"> 
+        panel2.setSize(mainFrame.getWidth()</span><span class="s1">, </span><span class="s0">mainFrame.getHeight() - </span><span class="s6">20</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+        panel2.setLocation(</span><span class="s6">0</span><span class="s1">, </span><span class="s6">0</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+        panel3.setBackground(Color.WHITE)</span><span class="s1">;</span><span class="s0"> 
+        panel3.setSize(mainFrame.getWidth()</span><span class="s1">, </span><span class="s0">mainFrame.getHeight())</span><span class="s1">;</span><span class="s0"> 
+        panel3.setLocation(</span><span class="s6">0</span><span class="s1">, </span><span class="s6">0</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+        panel1.setVisible(</span><span class="s1">true</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+        panel2.setVisible(</span><span class="s1">false</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+        panel3.setVisible(</span><span class="s1">false</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+        JButton push1 =  </span><span class="s1">new </span><span class="s0">JButton(</span><span class="s3">&quot;Create New Project&quot;</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+        push1.setAlignmentX(JComponent.CENTER_ALIGNMENT)</span><span class="s1">;</span><span class="s0"> 
+        push1.setLocation(</span><span class="s6">0</span><span class="s1">,</span><span class="s6">0</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+        push1.addActionListener( 
+                </span><span class="s1">new </span><span class="s0">ActionListener() { 
+                    @Override 
+                    </span><span class="s1">public void </span><span class="s0">actionPerformed(ActionEvent actionEvent) { 
+                        panel1.setVisible(</span><span class="s1">false</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+                        panel2.setVisible(</span><span class="s1">true</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+ 
+                    } 
+                } 
+        )</span><span class="s1">;</span><span class="s0"> 
+        panel1.add(push1)</span><span class="s1">;</span><span class="s0"> 
+        push1.setFocusPainted(</span><span class="s1">false</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+        push1.setContentAreaFilled(</span><span class="s1">false</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+        push1.setBorderPainted(</span><span class="s1">false</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+        push1.setRolloverEnabled(</span><span class="s1">false</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+        push1.setVisible(</span><span class="s1">true</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+        JButton push2 =  </span><span class="s1">new </span><span class="s0">JButton(</span><span class="s3">&quot;Open Saved Project&quot;</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+        push2.setAlignmentX(JComponent.CENTER_ALIGNMENT)</span><span class="s1">;</span><span class="s0"> 
+ 
+        push2.addActionListener( 
+                </span><span class="s1">new </span><span class="s0">ActionListener() { 
+                    @Override 
+                    </span><span class="s1">public void </span><span class="s0">actionPerformed(ActionEvent actionEvent) { 
+                        panel1.setVisible(</span><span class="s1">false</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+                        panel3.setVisible(</span><span class="s1">true</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+                    } 
+                } 
+        )</span><span class="s1">;</span><span class="s0"> 
+        panel1.add(push2)</span><span class="s1">;</span><span class="s0"> 
+        push2.setFocusPainted(</span><span class="s1">false</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+        push2.setContentAreaFilled(</span><span class="s1">false</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+        push2.setBorderPainted(</span><span class="s1">false</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+        push2.setRolloverEnabled(</span><span class="s1">false</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+        JButton push3 =  </span><span class="s1">new </span><span class="s0">JButton(</span><span class="s3">&quot;Thwack&quot;</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+        push3.addActionListener( 
+                </span><span class="s1">new </span><span class="s0">ActionListener() { 
+                    @Override 
+                    </span><span class="s1">public void </span><span class="s0">actionPerformed(ActionEvent actionEvent) { 
+                        panel1.setVisible(</span><span class="s1">true</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+                        panel3.setVisible(</span><span class="s1">false</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+                    } 
+                } 
+        )</span><span class="s1">;</span><span class="s0"> 
+        panel3.add(push3)</span><span class="s1">;</span><span class="s0"> 
+        push3.setFocusPainted(</span><span class="s1">false</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+        push3.setContentAreaFilled(</span><span class="s1">false</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+        push3.setBorderPainted(</span><span class="s1">false</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+        push3.setRolloverEnabled(</span><span class="s1">false</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+ 
+        JButton push7 = </span><span class="s1">new </span><span class="s0">JButton(</span><span class="s3">&quot;O-Pope-n&quot;</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+        panel3.add(push7)</span><span class="s1">;</span><span class="s0"> 
+        push7.addActionListener( 
+                (</span><span class="s1">new </span><span class="s0">ActionListener() { 
+                    @Override 
+                    </span><span class="s1">public void </span><span class="s0">actionPerformed(ActionEvent actionEvent) { 
+                        deserialize()</span><span class="s1">;</span><span class="s0"> 
+ 
+                    } 
+                }) 
+        )</span><span class="s1">;</span><span class="s0"> 
+        push7.setFocusPainted(</span><span class="s1">false</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+        push7.setContentAreaFilled(</span><span class="s1">false</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+        push7.setBorderPainted(</span><span class="s1">false</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+        push7.setRolloverEnabled(</span><span class="s1">false</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+ 
+ 
+        JPanel CompCanvas = </span><span class="s1">new </span><span class="s0">JPanel()</span><span class="s1">;</span><span class="s0"> 
+        JPanel spanel3 = </span><span class="s1">new </span><span class="s0">JPanel()</span><span class="s1">;</span><span class="s0"> 
+        spanel3.setBackground(Color.white)</span><span class="s1">;</span><span class="s0"> 
+        CompCanvas.setBackground(Color.white)</span><span class="s1">;</span><span class="s0"> 
+        CompCanvas.setVisible(</span><span class="s1">true</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+        canvas1 = </span><span class="s1">new </span><span class="s0">Canvas()</span><span class="s1">;</span><span class="s0"> 
+        canvas1.setLayout(</span><span class="s1">null</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+ 
+        panel2.setLayout(</span><span class="s1">new </span><span class="s0">BorderLayout())</span><span class="s1">;</span><span class="s0"> 
+        JSplitPane splitPane = </span><span class="s1">new </span><span class="s0">JSplitPane(JSplitPane.HORIZONTAL_SPLIT)</span><span class="s1">;</span><span class="s0"> 
+        splitPane.setEnabled(</span><span class="s1">true</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+        JSplitPane splitPane2 = </span><span class="s1">new </span><span class="s0">JSplitPane(JSplitPane.VERTICAL_SPLIT)</span><span class="s1">;</span><span class="s0"> 
+        splitPane.setRightComponent(</span><span class="s1">new </span><span class="s0">JScrollPane(canvas1))</span><span class="s1">;</span><span class="s0"> 
+        splitPane.setLeftComponent(splitPane2)</span><span class="s1">;</span><span class="s0"> 
+        splitPane2.setTopComponent(</span><span class="s1">new </span><span class="s0">JScrollPane(CompCanvas))</span><span class="s1">;</span><span class="s0"> 
+        splitPane2.setBottomComponent(spanel3)</span><span class="s1">;</span><span class="s0"> 
+        splitPane.setResizeWeight(</span><span class="s6">0.1</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+        splitPane2.setResizeWeight(</span><span class="s6">0.9</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+        panel2.add(splitPane</span><span class="s1">, </span><span class="s0">BorderLayout.CENTER)</span><span class="s1">;</span><span class="s0"> 
+ 
+        CompCanvas.setLayout(</span><span class="s1">new </span><span class="s0">BoxLayout(CompCanvas</span><span class="s1">, </span><span class="s0">BoxLayout.Y_AXIS))</span><span class="s1">;</span><span class="s0"> 
+        </span><span class="s1">for </span><span class="s0">(</span><span class="s1">int </span><span class="s0">s=</span><span class="s6">0</span><span class="s1">; </span><span class="s0">s&lt;names.length</span><span class="s1">; </span><span class="s0">s++){ 
+            </span><span class="s1">final int </span><span class="s0">s2 = s</span><span class="s1">;</span><span class="s0"> 
+            </span><span class="s1">final </span><span class="s0">String name = names[s]</span><span class="s1">;</span><span class="s0"> 
+            JButton x = </span><span class="s1">new </span><span class="s0">JButton(name)</span><span class="s1">;</span><span class="s0"> 
+            CompCanvas.add(x)</span><span class="s1">;</span><span class="s0"> 
+            x.setFocusPainted(</span><span class="s1">false</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+            x.setContentAreaFilled(</span><span class="s1">false</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+            x.setBorderPainted(</span><span class="s1">false</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+            x.setRolloverEnabled(</span><span class="s1">false</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+            x.setFont(</span><span class="s1">new </span><span class="s0">Font(</span><span class="s3">&quot;Verdana&quot;</span><span class="s1">, </span><span class="s0">Font.PLAIN</span><span class="s1">, </span><span class="s6">20</span><span class="s0">))</span><span class="s1">;</span><span class="s0"> 
+            x.setMaximumSize(</span><span class="s1">new </span><span class="s0">Dimension(</span><span class="s6">900</span><span class="s1">, </span><span class="s6">100</span><span class="s0">))</span><span class="s1">;</span><span class="s0"> 
+            x.setMinimumSize(</span><span class="s1">new </span><span class="s0">Dimension(</span><span class="s6">200</span><span class="s1">, </span><span class="s6">100</span><span class="s0">))</span><span class="s1">;</span><span class="s0"> 
+            x.addActionListener( 
+                    </span><span class="s1">new </span><span class="s0">ActionListener() { 
+                        @Override 
+                        </span><span class="s1">public void </span><span class="s0">actionPerformed(ActionEvent actionEvent) { 
+                            Main.lastButtonPressed = shortName[s2]</span><span class="s1">;</span><span class="s0"> 
+                            String component = lastButtonPressed</span><span class="s1">;</span><span class="s0"> 
+                            </span><span class="s1">if </span><span class="s0">(canvas1.mouseComponent != </span><span class="s1">null</span><span class="s0">) { 
+                                canvas1.remove(canvas1.mouseComponent)</span><span class="s1">;</span><span class="s0"> 
+                                canvas1.repaint()</span><span class="s1">;</span><span class="s0"> 
+                            } 
+                            </span><span class="s1">if </span><span class="s0">(component.equals(</span><span class="s3">&quot;WRE&quot;</span><span class="s0">)) { 
+                                canvas1.mouseComponent = </span><span class="s1">new </span><span class="s0">Wire(Main.rotation</span><span class="s1">, </span><span class="s6">0</span><span class="s1">, </span><span class="s6">0</span><span class="s1">, </span><span class="s6">0</span><span class="s1">, </span><span class="s6">0</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+ 
+                                </span><span class="s5">//canvas1.mouseComponent = new Resistor(Main.rotation, 0, 0);</span><span class="s0"> 
+                            }  </span><span class="s1">else if </span><span class="s0">(component.equals(</span><span class="s3">&quot;RST&quot;</span><span class="s0">)) { 
+                                canvas1.mouseComponent = </span><span class="s1">new </span><span class="s0">Resistor(Main.rotation</span><span class="s1">, </span><span class="s6">0</span><span class="s1">, </span><span class="s6">0</span><span class="s1">,</span><span class="s6">0</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+                            } </span><span class="s1">else if </span><span class="s0">(component.equals(</span><span class="s3">&quot;AMT&quot;</span><span class="s0">)) { 
+                                canvas1.mouseComponent = </span><span class="s1">new </span><span class="s0">Ammeter(Main.rotation</span><span class="s1">, </span><span class="s6">0</span><span class="s1">,</span><span class="s6">0</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+                            } </span><span class="s1">else if </span><span class="s0">(component.equals(</span><span class="s3">&quot;VLT&quot;</span><span class="s0">)) { 
+                                canvas1.mouseComponent = </span><span class="s1">new </span><span class="s0">Voltmeter(Main.rotation</span><span class="s1">, </span><span class="s6">0</span><span class="s1">,</span><span class="s6">0</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+                            } </span><span class="s1">else if </span><span class="s0">(component.equals(</span><span class="s3">&quot;BLB&quot;</span><span class="s0">)) { 
+                                canvas1.mouseComponent = </span><span class="s1">new </span><span class="s0">Bulb(Main.rotation</span><span class="s1">, </span><span class="s6">0</span><span class="s1">,</span><span class="s6">0</span><span class="s1">,</span><span class="s6">0</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+                            } </span><span class="s1">else if </span><span class="s0">(component.equals(</span><span class="s3">&quot;VAR&quot;</span><span class="s0">)) { 
+                                canvas1.mouseComponent = </span><span class="s1">new </span><span class="s0">VariableResistor(Main.rotation</span><span class="s1">, </span><span class="s6">0</span><span class="s1">,</span><span class="s6">0</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+                            } </span><span class="s1">else if </span><span class="s0">(component.equals(</span><span class="s3">&quot;CEL&quot;</span><span class="s0">)) { 
+                                canvas1.mouseComponent = </span><span class="s1">new </span><span class="s0">Cell(Main.rotation</span><span class="s1">, </span><span class="s6">0</span><span class="s1">,</span><span class="s6">0</span><span class="s1">,</span><span class="s6">0</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+                            } </span><span class="s1">else if </span><span class="s0">(component.equals(</span><span class="s3">&quot;LDR&quot;</span><span class="s0">)) { 
+                                canvas1.mouseComponent = </span><span class="s1">new </span><span class="s0">LightDependentResistor(Main.rotation</span><span class="s1">, </span><span class="s6">0</span><span class="s1">,</span><span class="s6">0</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+                            } </span><span class="s1">else if </span><span class="s0">(component.equals(</span><span class="s3">&quot;LED&quot;</span><span class="s0">)) { 
+                                canvas1.mouseComponent = </span><span class="s1">new </span><span class="s0">LightEmittingDiode(Main.rotation</span><span class="s1">, </span><span class="s6">0</span><span class="s1">,</span><span class="s6">0</span><span class="s1">,</span><span class="s6">0</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+                            } </span><span class="s1">else if </span><span class="s0">(component.equals(</span><span class="s3">&quot;CAP&quot;</span><span class="s0">)) { 
+                                canvas1.mouseComponent = </span><span class="s1">new </span><span class="s0">Capacitor(Main.rotation</span><span class="s1">, </span><span class="s6">0</span><span class="s1">,</span><span class="s6">0</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+                            } </span><span class="s1">else if </span><span class="s0">(component.equals(</span><span class="s3">&quot;SWT&quot;</span><span class="s0">)) { 
+                                canvas1.mouseComponent = </span><span class="s1">new </span><span class="s0">Switch(Main.rotation</span><span class="s1">, </span><span class="s6">0</span><span class="s1">,</span><span class="s6">0</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+                            } </span><span class="s1">else if </span><span class="s0">(component.equals(</span><span class="s3">&quot;SPD&quot;</span><span class="s0">)) { 
+                                canvas1.mouseComponent = </span><span class="s1">new </span><span class="s0">SinglePoleDoubleThrow(Main.rotation</span><span class="s1">, </span><span class="s6">0</span><span class="s1">,</span><span class="s6">0</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+                            } 
+                            canvas1.mouseComponent.setColor(</span><span class="s1">new </span><span class="s0">Color(</span><span class="s6">160</span><span class="s1">, </span><span class="s6">160</span><span class="s1">, </span><span class="s6">160</span><span class="s0">))</span><span class="s1">;</span><span class="s0"> 
+                            canvas1.add(canvas1.mouseComponent)</span><span class="s1">;</span><span class="s0"> 
+                             
+                             
+</span><span class="s5">//                            File file = new File(&quot;/Users/Ruben/Desktop/data.txt&quot;);</span><span class="s0"> 
+</span><span class="s5">//                            Writer writer = null;</span><span class="s0"> 
+</span><span class="s5">//                            try {PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(file, true)));</span><span class="s0"> 
+</span><span class="s5">//                                out.println(shortName[s2]);</span><span class="s0"> 
+</span><span class="s5">//                                out.close();</span><span class="s0"> 
+</span><span class="s5">//                                componentSelected = true;</span><span class="s0"> 
+</span><span class="s5">//                            } catch (IOException e) {</span><span class="s0"> 
+</span><span class="s5">//                                e.printStackTrace();</span><span class="s0"> 
+</span><span class="s5">//                            }</span><span class="s0"> 
+</span><span class="s5">//                            finally {</span><span class="s0"> 
+</span><span class="s5">//                                if (writer != null) try { writer.close(); } catch (IOException ignore) {}</span><span class="s0"> 
+</span><span class="s5">//                            }</span><span class="s0"> 
+                        } 
+                    } 
+            )</span><span class="s1">;</span><span class="s0"> 
+        } 
+    } 
+ 
+    </span><span class="s1">public static void </span><span class="s0">deserialize() { 
+        </span><span class="s1">int </span><span class="s0">x</span><span class="s1">;</span><span class="s0"> 
+        </span><span class="s1">try</span><span class="s0"> 
+        { 
+            FileInputStream fileIn = </span><span class="s1">new </span><span class="s0">FileInputStream(</span><span class="s3">&quot;/Users/Ruben/Documents/serialized.ser&quot;</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+            ObjectInputStream in = </span><span class="s1">new </span><span class="s0">ObjectInputStream(fileIn)</span><span class="s1">;</span><span class="s0"> 
+            Canvas.components = (ArrayList) in.readObject()</span><span class="s1">;</span><span class="s0"> 
+ 
+            x = Canvas.components.size()</span><span class="s1">;</span><span class="s0"> 
+            in.close()</span><span class="s1">;</span><span class="s0"> 
+            fileIn.close()</span><span class="s1">;</span><span class="s0"> 
+        }</span><span class="s1">catch</span><span class="s0">(IOException i) 
+        { 
+            i.printStackTrace()</span><span class="s1">;</span><span class="s0"> 
+            </span><span class="s1">return;</span><span class="s0"> 
+        }</span><span class="s1">catch</span><span class="s0">(ClassNotFoundException c) 
+        { 
+            System.out.println(</span><span class="s3">&quot;String class not found&quot;</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+            c.printStackTrace()</span><span class="s1">;</span><span class="s0"> 
+            </span><span class="s1">return;</span><span class="s0"> 
+        } 
+        System.out.println(</span><span class="s3">&quot;Deserialized String...&quot;</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+        panel3.setVisible(</span><span class="s1">false</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+        panel2.setVisible(</span><span class="s1">true</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+        </span><span class="s1">for </span><span class="s0">(</span><span class="s1">int </span><span class="s0">i=</span><span class="s6">0</span><span class="s1">; </span><span class="s0">i&lt;x</span><span class="s1">; </span><span class="s0">i++) { 
+            Canvas.components.get(i).setLocation((Canvas.components.get(i).x-</span><span class="s6">100</span><span class="s0">)</span><span class="s1">, </span><span class="s0">Canvas.components.get(i).y-</span><span class="s6">100</span><span class="s0">)</span><span class="s1">;</span><span class="s0"> 
+            canvas1.add(Canvas.components.get(i))</span><span class="s1">;</span><span class="s0"> 
+        } 
+ 
+ 
+    } 
+ 
+}</span></pre>
+</body>
+</html>

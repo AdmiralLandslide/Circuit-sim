@@ -1,4 +1,6 @@
 import java.awt.*;
+import java.math.BigDecimal;
+import java.math.MathContext;
 
 /**
  * Created by Ruben on 04/02/2014.
@@ -6,8 +8,8 @@ import java.awt.*;
 public class Resistor extends Component {
 
 
-    public Resistor(int rotation, int x, int y) {
-        super(rotation, x-100,y-100,200,200);
+    public Resistor(int rotation, int x, int y, float resistance) {
+        super(rotation, x-100,y-100,200,200,resistance,0);
 
     }
 
@@ -25,6 +27,8 @@ public class Resistor extends Component {
             g.drawLine(100, 0, 100, 50);
             g.drawLine(100, 150, 100, 200);
         }
-
+        if ((resistance != 0)) {
+            g.drawString(String.valueOf(new BigDecimal(resistance).round(new MathContext(3))) + "Ω", 85, 105);
+        }
     }
 }

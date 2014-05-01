@@ -6,8 +6,8 @@ import java.awt.*;
 public class Bulb extends Component {
 
 
-    public Bulb(int rotation, int x, int y) {
-        super(rotation,x-100,y-100,200,200);
+    public Bulb(int rotation, int x, int y, float resistance) {
+        super(rotation,x-100,y-100,200,200,resistance,0);
 
     }
 
@@ -21,6 +21,9 @@ public class Bulb extends Component {
             g.drawLine(125, 100, 200, 100);
             g.drawLine(83, 83, 117, 117);
             g.drawLine(83, 117, 117, 83);
+            if (resistance!=0) {
+                g.drawString(resistance + "Ω", 85, 150);
+            }
         }
         if (rotation % 2 == 0) {
             g.drawOval(75, 75, 50, 50);
@@ -28,6 +31,9 @@ public class Bulb extends Component {
             g.drawLine(100, 125, 100, 200);
             g.drawLine(83, 83, 117, 117);
             g.drawLine(83, 117, 117, 83);
+            if (resistance!=0) {
+                g.drawString(resistance + "Ω", 35, 105);
+            }
         }
     }
 }

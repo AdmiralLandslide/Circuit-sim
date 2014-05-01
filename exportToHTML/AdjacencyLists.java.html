@@ -1,0 +1,153 @@
+<html>
+<head>
+<title>AdjacencyLists.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: rgb(0,0,0); font-weight: normal; font-style: normal; }
+.s0 { color: rgb(204,120,50); }
+.s1 { color: rgb(169,183,198); }
+.s2 { color: rgb(98,151,85); }
+.s3 { color: rgb(104,151,187); }
+.s4 { color: rgb(128,128,128); }
+.s5 { color: rgb(106,135,89); }
+</style>
+</head>
+<BODY BGCOLOR="#2b2b2b">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#C0C0C0" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+AdjacencyLists.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+
+<span class="s0">import </span><span class="s1">java.util.ArrayList</span><span class="s0">;</span><span class="s1"> 
+</span><span class="s0">import </span><span class="s1">java.util.List</span><span class="s0">;</span><span class="s1"> 
+</span><span class="s0">import </span><span class="s1">java.util.Stack</span><span class="s0">;</span><span class="s1"> 
+ 
+ 
+</span><span class="s2">/** 
+* Created by Ruben on 22/02/2014. 
+*/</span><span class="s1"> 
+</span><span class="s0">public class </span><span class="s1">AdjacencyLists </span><span class="s0">implements </span><span class="s1">Cloneable{ 
+    </span><span class="s0">int </span><span class="s1">n</span><span class="s0">;</span><span class="s1"> 
+    Stack&lt;Integer&gt;[] adj</span><span class="s0">;</span><span class="s1"> 
+ 
+    AdjacencyLists(</span><span class="s0">int </span><span class="s1">n0) { 
+        n = n0</span><span class="s0">;</span><span class="s1"> 
+        adj = (Stack&lt;Integer&gt;[])</span><span class="s0">new </span><span class="s1">Stack[n]</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">i = </span><span class="s3">0</span><span class="s0">; </span><span class="s1">i &lt; n</span><span class="s0">; </span><span class="s1">i++) 
+            adj[i] = </span><span class="s0">new </span><span class="s1">Stack&lt;Integer&gt;()</span><span class="s0">;</span><span class="s1"> 
+    } 
+ 
+    AdjacencyLists(AdjacencyLists toCopy) { 
+        n = toCopy.getN()</span><span class="s0">;</span><span class="s1"> 
+        adj = (Stack&lt;Integer&gt;[])</span><span class="s0">new </span><span class="s1">Stack[n]</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">i = </span><span class="s3">0</span><span class="s0">; </span><span class="s1">i &lt; n</span><span class="s0">; </span><span class="s1">i++) 
+            adj[i] = </span><span class="s0">new </span><span class="s1">Stack&lt;Integer&gt;()</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">int </span><span class="s1">i = </span><span class="s3">0</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">while </span><span class="s1">(toCopy.getAdjacentNodes(i).size() &gt; </span><span class="s3">0</span><span class="s1">) { 
+            </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">j=</span><span class="s3">0</span><span class="s0">; </span><span class="s1">j&lt;toCopy.stackSize(i)</span><span class="s0">; </span><span class="s1">j++) { 
+                </span><span class="s0">this</span><span class="s1">.addEdge(i</span><span class="s0">, </span><span class="s1">toCopy.getNode(i</span><span class="s0">,</span><span class="s1">j))</span><span class="s0">;</span><span class="s1"> 
+            } 
+            i++</span><span class="s0">;</span><span class="s1"> 
+        } 
+    } 
+ 
+    </span><span class="s0">public int </span><span class="s1">getN() { </span><span class="s0">return </span><span class="s1">n</span><span class="s0">; </span><span class="s1">} 
+ 
+    </span><span class="s0">public void </span><span class="s1">addEdge(</span><span class="s0">int </span><span class="s1">i</span><span class="s0">, int </span><span class="s1">j) { 
+</span><span class="s4">//        System.out.println(i + &quot; &quot; + j);</span><span class="s1"> 
+        </span><span class="s0">if </span><span class="s1">(!adj[i].contains(j)) { 
+            adj[i].add(j)</span><span class="s0">;</span><span class="s1"> 
+        } 
+    } 
+ 
+    </span><span class="s0">public void </span><span class="s1">printList() { 
+        System.out.println(</span><span class="s5">&quot;print adjacency list size here : &quot; </span><span class="s1">+ Canvas.coordListSize)</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">i=</span><span class="s3">0</span><span class="s0">; </span><span class="s1">i&lt;Canvas.coordListSize</span><span class="s0">; </span><span class="s1">i++) { 
+            System.out.print(i + </span><span class="s5">&quot;   &quot;</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+            </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">j=</span><span class="s3">0</span><span class="s0">; </span><span class="s1">j&lt;adj[i].size()</span><span class="s0">; </span><span class="s1">j++) { 
+                System.out.print(adj[i].get(j) + </span><span class="s5">&quot; &quot;</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+            } 
+            System.out.println()</span><span class="s0">;</span><span class="s1"> 
+</span><span class="s4">//            System.out.print(adj[i].get(0));</span><span class="s1"> 
+        } 
+    } 
+    </span><span class="s0">public int </span><span class="s1">mostConnections() { 
+        </span><span class="s0">int </span><span class="s1">x = </span><span class="s3">0</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">int </span><span class="s1">biggest = </span><span class="s3">0</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">i = </span><span class="s3">0</span><span class="s0">; </span><span class="s1">i&lt; n</span><span class="s0">; </span><span class="s1">i++) { 
+            </span><span class="s0">if </span><span class="s1">(adj[i].size() &gt; x ) { 
+                x = adj[i].size()</span><span class="s0">;</span><span class="s1"> 
+                biggest = i</span><span class="s0">;</span><span class="s1"> 
+            } 
+        } 
+    </span><span class="s0">return </span><span class="s1">biggest</span><span class="s0">;</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s0">public int </span><span class="s1">getNode(</span><span class="s0">int </span><span class="s1">i</span><span class="s0">, int </span><span class="s1">j) { 
+        </span><span class="s0">int </span><span class="s1">x = adj[i].get(j)</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">return </span><span class="s1">x</span><span class="s0">;</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s0">public int </span><span class="s1">stackSize(</span><span class="s0">int </span><span class="s1">i) { 
+        </span><span class="s0">int </span><span class="s1">x = adj[i].size()</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">return </span><span class="s1">x</span><span class="s0">;</span><span class="s1"> 
+    } 
+    </span><span class="s0">public boolean </span><span class="s1">contains(</span><span class="s0">int </span><span class="s1">index</span><span class="s0">, int </span><span class="s1">val) { 
+        </span><span class="s0">if </span><span class="s1">(adj[index].contains(val)) { </span><span class="s0">return true;</span><span class="s1">} 
+        </span><span class="s0">else return false;</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s0">public </span><span class="s1">List&lt;Integer&gt; getAdjacentNodes(</span><span class="s0">int </span><span class="s1">i) { 
+        </span><span class="s0">return </span><span class="s1">adj[i]</span><span class="s0">;</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s0">public int </span><span class="s1">sizeOfAdj() { 
+        </span><span class="s0">boolean </span><span class="s1">end = </span><span class="s0">false;</span><span class="s1"> 
+        </span><span class="s0">int </span><span class="s1">i = </span><span class="s3">0</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">while </span><span class="s1">(!end ) { 
+            </span><span class="s0">if </span><span class="s1">(adj[i].size() == </span><span class="s3">0</span><span class="s1">) { 
+                end = </span><span class="s0">true;</span><span class="s1"> 
+            } 
+            </span><span class="s0">else </span><span class="s1">{i++</span><span class="s0">;</span><span class="s1">} 
+        } 
+        </span><span class="s0">return </span><span class="s1">i</span><span class="s0">;</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s0">public int </span><span class="s1">countEdges() { 
+        </span><span class="s0">boolean </span><span class="s1">end = </span><span class="s0">false;</span><span class="s1"> 
+        </span><span class="s0">int </span><span class="s1">size = </span><span class="s3">0</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">int </span><span class="s1">i=</span><span class="s3">0</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">while </span><span class="s1">(adj[i].size() != </span><span class="s3">0</span><span class="s1">) { 
+            size += adj[i].size()</span><span class="s0">;</span><span class="s1"> 
+            i++</span><span class="s0">;</span><span class="s1"> 
+        } 
+        size /= </span><span class="s3">2</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">return </span><span class="s1">size</span><span class="s0">;</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s0">public void </span><span class="s1">removeEdge(</span><span class="s0">int </span><span class="s1">i</span><span class="s0">, int </span><span class="s1">j) { 
+        adj[i].remove(Integer.valueOf(j))</span><span class="s0">;</span><span class="s1"> 
+        adj[j].remove(Integer.valueOf(i))</span><span class="s0">;</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s0">public boolean </span><span class="s1">removeDeadEnds() { 
+        </span><span class="s0">boolean </span><span class="s1">removed = </span><span class="s0">false;</span><span class="s1"> 
+        </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">i=</span><span class="s3">0</span><span class="s0">; </span><span class="s1">i&lt; Canvas.coordListSize</span><span class="s0">;</span><span class="s1">i++) { 
+            </span><span class="s0">if </span><span class="s1">(adj[i].size() == </span><span class="s3">1</span><span class="s1">) { 
+                removed = </span><span class="s0">true;</span><span class="s1"> 
+                adj[i].pop()</span><span class="s0">;</span><span class="s1"> 
+                </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">j=</span><span class="s3">0</span><span class="s0">; </span><span class="s1">j&lt;Canvas.coordListSize</span><span class="s0">; </span><span class="s1">j++) { 
+                    </span><span class="s0">if </span><span class="s1">(adj[j].contains(i)) { 
+                        adj[j].remove(Integer.valueOf(i))</span><span class="s0">;</span><span class="s1"> 
+                    } 
+                } 
+            } 
+        } 
+        </span><span class="s0">return </span><span class="s1">removed</span><span class="s0">;</span><span class="s1"> 
+    } 
+} 
+</span></pre>
+</body>
+</html>

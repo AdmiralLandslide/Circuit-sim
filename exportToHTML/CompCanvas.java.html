@@ -1,0 +1,75 @@
+<html>
+<head>
+<title>CompCanvas.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: rgb(0,0,0); font-weight: normal; font-style: normal; }
+.s0 { color: rgb(128,128,128); }
+.s1 { color: rgb(169,183,198); }
+</style>
+</head>
+<BODY BGCOLOR="#2b2b2b">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#C0C0C0" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+CompCanvas.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+
+<span class="s0">//import javax.swing.*;</span><span class="s1"> 
+</span><span class="s0">//import java.awt.*;</span><span class="s1"> 
+</span><span class="s0">//import java.awt.event.ActionEvent;</span><span class="s1"> 
+</span><span class="s0">//import java.awt.event.ActionListener;</span><span class="s1"> 
+</span><span class="s0">//import java.io.*;</span><span class="s1"> 
+</span><span class="s0">//</span><span class="s1"> 
+</span><span class="s0">///**</span><span class="s1"> 
+</span><span class="s0">// * Created by Ruben on 05/02/2014.</span><span class="s1"> 
+</span><span class="s0">// */</span><span class="s1"> 
+</span><span class="s0">//</span><span class="s1"> 
+</span><span class="s0">//</span><span class="s1"> 
+</span><span class="s0">//public class CompCanvas extends JPanel {</span><span class="s1"> 
+</span><span class="s0">//</span><span class="s1"> 
+</span><span class="s0">//    static String[] names = {&quot;WIRE&quot;, &quot;RESISTOR&quot;, &quot;AMMETER&quot;, &quot;VOLTMETER&quot;, &quot;BULB&quot;, &quot;POTENTIOMETER&quot;, &quot;CELL&quot;, &quot;LDR&quot;, &quot;LED&quot;, &quot;CAPACITOR&quot;, &quot;SWITCH&quot;, &quot;SPDT&quot;};</span><span class="s1"> 
+</span><span class="s0">//    static String[] shortName = {&quot;WRE&quot;, &quot;RST&quot;, &quot;AMT&quot;, &quot;VLT&quot;, &quot;BLB&quot;, &quot;POT&quot;, &quot;CEL&quot;, &quot;LDR&quot;, &quot;LED&quot;, &quot;CAP&quot;, &quot;SWT&quot;, &quot;SPD&quot;};</span><span class="s1"> 
+</span><span class="s0">//    static Boolean componentSelected = false;</span><span class="s1"> 
+</span><span class="s0">//</span><span class="s1"> 
+</span><span class="s0">//    public CompCanvas() {</span><span class="s1"> 
+</span><span class="s0">//        CompCanvas.setLayout(new BoxLayout(CompCanvas, BoxLayout.Y_AXIS));</span><span class="s1"> 
+</span><span class="s0">//        for (int s=0; s&lt;13; s++){</span><span class="s1"> 
+</span><span class="s0">//        final int s2 = s;</span><span class="s1"> 
+</span><span class="s0">//        final String name = names[s];</span><span class="s1"> 
+</span><span class="s0">//            JButton x = new JButton(name);</span><span class="s1"> 
+</span><span class="s0">//            CompCanvas.add(x);</span><span class="s1"> 
+</span><span class="s0">//            x.setFocusPainted(false);</span><span class="s1"> 
+</span><span class="s0">//            x.setContentAreaFilled(false);</span><span class="s1"> 
+</span><span class="s0">//            x.setBorderPainted(false);</span><span class="s1"> 
+</span><span class="s0">//            x.setRolloverEnabled(false);</span><span class="s1"> 
+</span><span class="s0">//            x.setFont(new Font(&quot;Apple Gothic&quot;, Font.PLAIN, 20));</span><span class="s1"> 
+</span><span class="s0">//            x.setMaximumSize(new Dimension(900, 100));</span><span class="s1"> 
+</span><span class="s0">//            x.setMinimumSize(new Dimension(200, 100));</span><span class="s1"> 
+</span><span class="s0">//            x.addActionListener(</span><span class="s1"> 
+</span><span class="s0">//                    new ActionListener() {</span><span class="s1"> 
+</span><span class="s0">//                        @Override</span><span class="s1"> 
+</span><span class="s0">//                        public void actionPerformed(ActionEvent actionEvent) {</span><span class="s1"> 
+</span><span class="s0">//                            File file = new File(&quot;/Users/Ruben/Desktop/data.txt&quot;);</span><span class="s1"> 
+</span><span class="s0">//                            Writer writer = null;</span><span class="s1"> 
+</span><span class="s0">//                            try {PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(file, true)));</span><span class="s1"> 
+</span><span class="s0">//                                out.println(shortName[s2]);</span><span class="s1"> 
+</span><span class="s0">//                                out.close();</span><span class="s1"> 
+</span><span class="s0">//                                componentSelected = true;</span><span class="s1"> 
+</span><span class="s0">//                            } catch (IOException e) {</span><span class="s1"> 
+</span><span class="s0">//                                e.printStackTrace();</span><span class="s1"> 
+</span><span class="s0">//                            }</span><span class="s1"> 
+</span><span class="s0">//                            finally {</span><span class="s1"> 
+</span><span class="s0">//                                if (writer != null) try { writer.close(); } catch (IOException ignore) {}</span><span class="s1"> 
+</span><span class="s0">//                            }</span><span class="s1"> 
+</span><span class="s0">//</span><span class="s1"> 
+</span><span class="s0">//                        }</span><span class="s1"> 
+</span><span class="s0">//                    }</span><span class="s1"> 
+</span><span class="s0">//            );</span><span class="s1"> 
+</span><span class="s0">//       }</span><span class="s1"> 
+</span><span class="s0">//    }</span><span class="s1"> 
+</span><span class="s0">//}</span><span class="s1"> 
+</span></pre>
+</body>
+</html>

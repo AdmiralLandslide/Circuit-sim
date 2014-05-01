@@ -1,0 +1,66 @@
+<html>
+<head>
+<title>Coordinate.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: rgb(0,0,0); font-weight: normal; font-style: normal; }
+.s0 { color: rgb(98,151,85); }
+.s1 { color: rgb(169,183,198); }
+.s2 { color: rgb(204,120,50); }
+.s3 { color: rgb(128,128,128); }
+.s4 { color: rgb(104,151,187); }
+</style>
+</head>
+<BODY BGCOLOR="#2b2b2b">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#C0C0C0" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+Coordinate.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+
+<span class="s0">/** 
+ * Created by Ruben on 26/02/2014. 
+ */</span><span class="s1"> 
+</span><span class="s2">public class </span><span class="s1">Coordinate { 
+    </span><span class="s2">private int </span><span class="s1">x</span><span class="s2">;</span><span class="s1"> 
+    </span><span class="s2">private int </span><span class="s1">y</span><span class="s2">;</span><span class="s1"> 
+ 
+    </span><span class="s2">public </span><span class="s1">Coordinate(</span><span class="s2">int </span><span class="s1">x</span><span class="s2">, int </span><span class="s1">y) { 
+        </span><span class="s2">this</span><span class="s1">.x = x</span><span class="s2">;</span><span class="s1"> 
+        </span><span class="s2">this</span><span class="s1">.y = y</span><span class="s2">;</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s2">public int </span><span class="s1">getX() { 
+        </span><span class="s2">return this</span><span class="s1">.x</span><span class="s2">;</span><span class="s1"> 
+    } 
+    </span><span class="s2">public int </span><span class="s1">getY() { 
+        </span><span class="s2">return this</span><span class="s1">.y</span><span class="s2">;</span><span class="s1"> 
+    } 
+ 
+</span><span class="s3">//    public String toString</span><span class="s1"> 
+ 
+ 
+    @Override 
+    </span><span class="s2">public boolean </span><span class="s1">equals(Object o) { 
+        </span><span class="s2">if </span><span class="s1">(</span><span class="s2">this </span><span class="s1">== o) </span><span class="s2">return true;</span><span class="s1"> 
+        </span><span class="s2">if </span><span class="s1">(o == </span><span class="s2">null </span><span class="s1">|| getClass() != o.getClass()) </span><span class="s2">return false;</span><span class="s1"> 
+ 
+        Coordinate that = (Coordinate) o</span><span class="s2">;</span><span class="s1"> 
+ 
+        </span><span class="s2">if </span><span class="s1">(x != that.x) </span><span class="s2">return false;</span><span class="s1"> 
+        </span><span class="s2">if </span><span class="s1">(y != that.y) </span><span class="s2">return false;</span><span class="s1"> 
+ 
+        </span><span class="s2">return true;</span><span class="s1"> 
+    } 
+ 
+    @Override 
+    </span><span class="s2">public int </span><span class="s1">hashCode() { 
+        </span><span class="s2">int </span><span class="s1">result = x</span><span class="s2">;</span><span class="s1"> 
+        result = </span><span class="s4">31 </span><span class="s1">* result + y</span><span class="s2">;</span><span class="s1"> 
+        </span><span class="s2">return </span><span class="s1">result</span><span class="s2">;</span><span class="s1"> 
+    } 
+} 
+</span></pre>
+</body>
+</html>

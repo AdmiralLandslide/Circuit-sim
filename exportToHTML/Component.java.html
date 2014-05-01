@@ -1,0 +1,105 @@
+<html>
+<head>
+<title>Component.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: rgb(0,0,0); font-weight: normal; font-style: normal; }
+.s0 { color: rgb(204,120,50); }
+.s1 { color: rgb(169,183,198); }
+.s2 { color: rgb(98,151,85); }
+.s3 { color: rgb(104,151,187); }
+</style>
+</head>
+<BODY BGCOLOR="#2b2b2b">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#C0C0C0" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+Component.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+
+<span class="s0">import </span><span class="s1">javax.swing.*</span><span class="s0">;</span><span class="s1"> 
+</span><span class="s0">import </span><span class="s1">java.awt.*</span><span class="s0">;</span><span class="s1"> 
+ 
+</span><span class="s2">/** 
+ * Created by Ruben on 04/02/2014. 
+ */</span><span class="s1"> 
+</span><span class="s0">public abstract class </span><span class="s1">Component </span><span class="s0">extends </span><span class="s1">JComponent { 
+ 
+    </span><span class="s0">public int </span><span class="s1">rotation</span><span class="s0">;</span><span class="s1"> 
+    </span><span class="s0">private </span><span class="s1">Color color = Color.black</span><span class="s0">;</span><span class="s1"> 
+    </span><span class="s0">static int </span><span class="s1">width = Main.mainFrame.getWidth()</span><span class="s0">;</span><span class="s1"> 
+    </span><span class="s0">public double </span><span class="s1">resistance</span><span class="s0">;</span><span class="s1"> 
+    </span><span class="s0">public double </span><span class="s1">emf</span><span class="s0">;</span><span class="s1"> 
+    </span><span class="s0">public int </span><span class="s1">x</span><span class="s0">;</span><span class="s1"> 
+    </span><span class="s0">public int </span><span class="s1">y</span><span class="s0">;</span><span class="s1"> 
+    </span><span class="s0">public int </span><span class="s1">xone</span><span class="s0">;</span><span class="s1"> 
+    </span><span class="s0">public int </span><span class="s1">yone</span><span class="s0">;</span><span class="s1"> 
+    </span><span class="s0">public int </span><span class="s1">xtwo</span><span class="s0">;</span><span class="s1"> 
+    </span><span class="s0">public int </span><span class="s1">ytwo</span><span class="s0">;</span><span class="s1"> 
+    </span><span class="s0">private double </span><span class="s1">current</span><span class="s0">;</span><span class="s1"> 
+ 
+    </span><span class="s0">public void </span><span class="s1">setCurrent(</span><span class="s0">double </span><span class="s1">d) {current = d</span><span class="s0">;</span><span class="s1">} 
+    </span><span class="s0">public double </span><span class="s1">getCurrent() { </span><span class="s0">return </span><span class="s1">current</span><span class="s0">;</span><span class="s1">} 
+    </span><span class="s0">public double </span><span class="s1">getPotentialDifference() { </span><span class="s0">return </span><span class="s1">(current * resistance)</span><span class="s0">;</span><span class="s1">} 
+ 
+    </span><span class="s0">public </span><span class="s1">Component(</span><span class="s0">int </span><span class="s1">rotation</span><span class="s0">, int </span><span class="s1">x</span><span class="s0">, int </span><span class="s1">y</span><span class="s0">,int </span><span class="s1">w</span><span class="s0">, int </span><span class="s1">h</span><span class="s0">, double </span><span class="s1">resistance</span><span class="s0">, double </span><span class="s1">emf) { 
+        </span><span class="s0">super</span><span class="s1">()</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">this</span><span class="s1">.setSize(w</span><span class="s0">,</span><span class="s1">h)</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">this</span><span class="s1">.setLocation(x</span><span class="s0">,</span><span class="s1">y)</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">this</span><span class="s1">.rotation = rotation</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">this</span><span class="s1">.resistance = resistance</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">this</span><span class="s1">.emf = emf</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">this</span><span class="s1">.x = x+</span><span class="s3">100</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">this</span><span class="s1">.y = y+</span><span class="s3">100</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">if </span><span class="s1">(</span><span class="s0">this</span><span class="s1">.rotation % </span><span class="s3">2 </span><span class="s1">== </span><span class="s3">1</span><span class="s1">) { 
+            xone = </span><span class="s0">this</span><span class="s1">.x - </span><span class="s3">100</span><span class="s0">;</span><span class="s1"> 
+            xtwo = </span><span class="s0">this</span><span class="s1">.x + </span><span class="s3">100</span><span class="s0">;</span><span class="s1"> 
+            yone = </span><span class="s0">this</span><span class="s1">.y</span><span class="s0">;</span><span class="s1"> 
+            ytwo = </span><span class="s0">this</span><span class="s1">.y</span><span class="s0">;</span><span class="s1"> 
+        } 
+        </span><span class="s0">if </span><span class="s1">(</span><span class="s0">this</span><span class="s1">.rotation %</span><span class="s3">2 </span><span class="s1">== </span><span class="s3">0</span><span class="s1">) { 
+            xone = </span><span class="s0">this</span><span class="s1">.x</span><span class="s0">;</span><span class="s1"> 
+            xtwo = </span><span class="s0">this</span><span class="s1">.x</span><span class="s0">;</span><span class="s1"> 
+            yone = </span><span class="s0">this</span><span class="s1">.y + </span><span class="s3">100</span><span class="s0">;</span><span class="s1"> 
+            ytwo = </span><span class="s0">this</span><span class="s1">.y - </span><span class="s3">100</span><span class="s0">;</span><span class="s1"> 
+        } 
+    } 
+    @Override 
+    </span><span class="s0">public </span><span class="s1">Dimension getPreferredSize() { 
+        </span><span class="s0">return new </span><span class="s1">Dimension(getWidth()</span><span class="s0">, </span><span class="s1">getHeight())</span><span class="s0">;</span><span class="s1"> 
+    } 
+    </span><span class="s0">protected void </span><span class="s1">paintComponent(Graphics g){ 
+        g.setColor(color)</span><span class="s0">;</span><span class="s1"> 
+ 
+    } 
+ 
+    </span><span class="s0">public void </span><span class="s1">setColor(Color color) { 
+        </span><span class="s0">this</span><span class="s1">.color = color</span><span class="s0">;</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s0">public </span><span class="s1">Coordinate getEndPoint1() { 
+        Coordinate coord1 = </span><span class="s0">new </span><span class="s1">Coordinate(</span><span class="s3">0</span><span class="s0">,</span><span class="s3">0</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">if </span><span class="s1">((rotation % </span><span class="s3">2</span><span class="s1">) == </span><span class="s3">1 </span><span class="s1">) { 
+            coord1 = </span><span class="s0">new </span><span class="s1">Coordinate(x-</span><span class="s3">100</span><span class="s0">, </span><span class="s1">y)</span><span class="s0">;</span><span class="s1"> 
+        } 
+        </span><span class="s0">if </span><span class="s1">((rotation % </span><span class="s3">2</span><span class="s1">) == </span><span class="s3">0 </span><span class="s1">) { 
+            coord1 = </span><span class="s0">new </span><span class="s1">Coordinate(x</span><span class="s0">, </span><span class="s1">y-</span><span class="s3">100</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+        } 
+        </span><span class="s0">return </span><span class="s1">coord1</span><span class="s0">;</span><span class="s1"> 
+    } 
+    </span><span class="s0">public </span><span class="s1">Coordinate getEndPoint2() { 
+ 
+        Coordinate coord2 = </span><span class="s0">new </span><span class="s1">Coordinate(</span><span class="s3">0</span><span class="s0">,</span><span class="s3">0</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">if </span><span class="s1">((rotation % </span><span class="s3">2</span><span class="s1">) == </span><span class="s3">1 </span><span class="s1">) { 
+            coord2 = </span><span class="s0">new </span><span class="s1">Coordinate(x+</span><span class="s3">100</span><span class="s0">, </span><span class="s1">y)</span><span class="s0">;</span><span class="s1"> 
+        }</span><span class="s0">if </span><span class="s1">((rotation % </span><span class="s3">2</span><span class="s1">) == </span><span class="s3">0 </span><span class="s1">) { 
+            coord2 = </span><span class="s0">new </span><span class="s1">Coordinate(x</span><span class="s0">, </span><span class="s1">y+</span><span class="s3">100</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+        } 
+        </span><span class="s0">return </span><span class="s1">coord2</span><span class="s0">;</span><span class="s1"> 
+    } 
+ 
+} 
+</span></pre>
+</body>
+</html>

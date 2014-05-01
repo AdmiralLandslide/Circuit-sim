@@ -1,0 +1,811 @@
+<html>
+<head>
+<title>Canvas.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: rgb(0,0,0); font-weight: normal; font-style: normal; }
+.s0 { color: rgb(204,120,50); }
+.s1 { color: rgb(169,183,198); }
+.s2 { color: rgb(104,151,187); }
+.s3 { color: rgb(128,128,128); }
+.s4 { color: rgb(106,135,89); }
+</style>
+</head>
+<BODY BGCOLOR="#2b2b2b">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#C0C0C0" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+Canvas.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+
+<span class="s0">import </span><span class="s1">javax.swing.*</span><span class="s0">;</span><span class="s1"> 
+</span><span class="s0">import </span><span class="s1">java.awt.*</span><span class="s0">;</span><span class="s1"> 
+</span><span class="s0">import </span><span class="s1">java.awt.event.*</span><span class="s0">;</span><span class="s1"> 
+</span><span class="s0">import </span><span class="s1">java.awt.geom.Line2D</span><span class="s0">;</span><span class="s1"> 
+</span><span class="s0">import </span><span class="s1">java.io.*</span><span class="s0">;</span><span class="s1"> 
+</span><span class="s0">import </span><span class="s1">java.util.*</span><span class="s0">;</span><span class="s1"> 
+</span><span class="s0">import </span><span class="s1">Jama.Matrix</span><span class="s0">;</span><span class="s1"> 
+</span><span class="s0">import </span><span class="s1">java.lang.Math.*</span><span class="s0">;</span><span class="s1"> 
+ 
+</span><span class="s0">public class </span><span class="s1">Canvas </span><span class="s0">extends </span><span class="s1">JPanel { 
+ 
+    </span><span class="s0">private </span><span class="s1">Dimension preferredSize = </span><span class="s0">new </span><span class="s1">Dimension(</span><span class="s2">600</span><span class="s0">, </span><span class="s2">600</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+    </span><span class="s0">private </span><span class="s1">Line2D[] lines = </span><span class="s0">new </span><span class="s1">Line2D[</span><span class="s2">70</span><span class="s1">]</span><span class="s0">;</span><span class="s1"> 
+    </span><span class="s0">private </span><span class="s1">Line2D[] lines2 = </span><span class="s0">new </span><span class="s1">Line2D[</span><span class="s2">70</span><span class="s1">]</span><span class="s0">;</span><span class="s1"> 
+    </span><span class="s0">private double </span><span class="s1">scale = </span><span class="s2">1</span><span class="s0">;</span><span class="s1"> 
+    </span><span class="s0">static public </span><span class="s1">ArrayList&lt;Component&gt; components = </span><span class="s0">new </span><span class="s1">ArrayList&lt;Component&gt;()</span><span class="s0">;</span><span class="s1"> 
+    </span><span class="s0">private </span><span class="s1">CoordList coordList = </span><span class="s0">new </span><span class="s1">CoordList()</span><span class="s0">;</span><span class="s1"> 
+    </span><span class="s0">public </span><span class="s1">Component mouseComponent = </span><span class="s0">null;</span><span class="s1"> 
+    </span><span class="s0">boolean </span><span class="s1">clicked = </span><span class="s0">false;</span><span class="s1"> 
+    </span><span class="s0">static </span><span class="s1">Integer x2</span><span class="s0">;</span><span class="s1"> 
+    </span><span class="s0">static </span><span class="s1">Integer y2</span><span class="s0">;</span><span class="s1"> 
+    </span><span class="s0">public float </span><span class="s1">x</span><span class="s0">;</span><span class="s1"> 
+    </span><span class="s0">boolean </span><span class="s1">valid</span><span class="s0">;</span><span class="s1"> 
+    </span><span class="s0">int </span><span class="s1">m = </span><span class="s2">0</span><span class="s0">;</span><span class="s1"> 
+    </span><span class="s0">public static int </span><span class="s1">coordListSize</span><span class="s0">;</span><span class="s1"> 
+    </span><span class="s0">public </span><span class="s1">AdjacencyLists Adj1 = </span><span class="s0">new </span><span class="s1">AdjacencyLists(</span><span class="s2">200</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+    </span><span class="s0">public </span><span class="s1">AdjacencyLists Adj2</span><span class="s0">;</span><span class="s1"> 
+    </span><span class="s0">public </span><span class="s1">AdjacencyLists Adj3</span><span class="s0">;</span><span class="s1"> 
+</span><span class="s3">//    private Wire tempWire;</span><span class="s1"> 
+</span><span class="s3">//    private Stack visited;</span><span class="s1"> 
+    </span><span class="s0">private </span><span class="s1">Stack&lt;Integer&gt; path = </span><span class="s0">new </span><span class="s1">Stack&lt;Integer&gt;()</span><span class="s0">;</span><span class="s1"> 
+    </span><span class="s0">private </span><span class="s1">Stack visited = </span><span class="s0">new </span><span class="s1">Stack()</span><span class="s0">;</span><span class="s1"> 
+    </span><span class="s0">private </span><span class="s1">ArrayList&lt;Stack&lt;Integer&gt;&gt; pathList = </span><span class="s0">new </span><span class="s1">ArrayList&lt;Stack&lt;Integer&gt;&gt;()</span><span class="s0">;</span><span class="s1"> 
+    </span><span class="s0">private </span><span class="s1">Matrix lhsMatrix</span><span class="s0">;</span><span class="s1"> 
+    </span><span class="s0">private </span><span class="s1">Matrix rhsMatrix</span><span class="s0">;</span><span class="s1"> 
+    </span><span class="s0">private </span><span class="s1">ArrayList&lt;ArrayList&lt;Coordinate&gt;&gt; pathCoordList = </span><span class="s0">new </span><span class="s1">ArrayList(m)</span><span class="s0">;</span><span class="s1"> 
+ 
+    </span><span class="s0">public </span><span class="s1">Canvas() { 
+        </span><span class="s0">super</span><span class="s1">()</span><span class="s0">;</span><span class="s1"> 
+        JButton push4 = </span><span class="s0">new </span><span class="s1">JButton(</span><span class="s4">&quot;rotate&quot;</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+        push4.setSize(</span><span class="s2">70</span><span class="s0">, </span><span class="s2">20</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+        push4.setLocation(</span><span class="s2">0</span><span class="s0">, </span><span class="s2">0</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+        add(push4)</span><span class="s0">;</span><span class="s1"> 
+        push4.addActionListener( 
+                (</span><span class="s0">new </span><span class="s1">ActionListener() { 
+                    @Override 
+                    </span><span class="s0">public void </span><span class="s1">actionPerformed(ActionEvent actionEvent) { 
+                        Main.rotation++</span><span class="s0">;</span><span class="s1"> 
+                        </span><span class="s0">if </span><span class="s1">(mouseComponent != </span><span class="s0">null</span><span class="s1">) { 
+                            mouseComponent.rotation++</span><span class="s0">;</span><span class="s1"> 
+                        } 
+                        </span><span class="s0">if </span><span class="s1">((Main.rotation % </span><span class="s2">5</span><span class="s1">) == </span><span class="s2">0</span><span class="s1">) { 
+                            Main.rotation = </span><span class="s2">1</span><span class="s0">;</span><span class="s1"> 
+                        } 
+                    } 
+                }) 
+        )</span><span class="s0">;</span><span class="s1"> 
+        JButton push5 = </span><span class="s0">new </span><span class="s1">JButton(</span><span class="s4">&quot;mouse&quot;</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+        push5.setSize(</span><span class="s2">70</span><span class="s0">, </span><span class="s2">20</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+        push5.setLocation(</span><span class="s2">0</span><span class="s0">, </span><span class="s2">20</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+        add(push5)</span><span class="s0">;</span><span class="s1"> 
+        push5.addActionListener( 
+                (</span><span class="s0">new </span><span class="s1">ActionListener() { 
+                    @Override 
+                    </span><span class="s0">public void </span><span class="s1">actionPerformed(ActionEvent actionEvent) { 
+                        Main.lastButtonPressed = </span><span class="s0">null;</span><span class="s1"> 
+                        </span><span class="s0">if </span><span class="s1">(mouseComponent != </span><span class="s0">null</span><span class="s1">) remove(mouseComponent)</span><span class="s0">;</span><span class="s1"> 
+                        mouseComponent = </span><span class="s0">null;</span><span class="s1"> 
+                        repaint()</span><span class="s0">;</span><span class="s1"> 
+                        clicked = </span><span class="s0">false;</span><span class="s1"> 
+                        x2 = </span><span class="s2">0</span><span class="s0">;</span><span class="s1"> 
+                        y2 = </span><span class="s2">0</span><span class="s0">;</span><span class="s1"> 
+                    } 
+                }) 
+        )</span><span class="s0">;</span><span class="s1"> 
+ 
+        JButton push6 = </span><span class="s0">new </span><span class="s1">JButton(</span><span class="s4">&quot;run&quot;</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+        push6.setSize(</span><span class="s2">70</span><span class="s0">, </span><span class="s2">20</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+        push6.setLocation(</span><span class="s2">0</span><span class="s0">, </span><span class="s2">40</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+        add(push6)</span><span class="s0">;</span><span class="s1"> 
+        push6.addActionListener( 
+                (</span><span class="s0">new </span><span class="s1">ActionListener() { 
+                    @Override 
+                    </span><span class="s0">public void </span><span class="s1">actionPerformed(ActionEvent actionEvent) { 
+                        listData()</span><span class="s0">;</span><span class="s1"> 
+ 
+                    } 
+                }) 
+        )</span><span class="s0">;</span><span class="s1"> 
+ 
+        JButton push7 = </span><span class="s0">new </span><span class="s1">JButton(</span><span class="s4">&quot;save&quot;</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+        push7.setSize(</span><span class="s2">70</span><span class="s0">, </span><span class="s2">20</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+        push7.setLocation(</span><span class="s2">0</span><span class="s0">, </span><span class="s2">60</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+        add(push7)</span><span class="s0">;</span><span class="s1"> 
+        push7.addActionListener( 
+                (</span><span class="s0">new </span><span class="s1">ActionListener() { 
+                    @Override 
+                    </span><span class="s0">public void </span><span class="s1">actionPerformed(ActionEvent actionEvent) { 
+                        serialize(components)</span><span class="s0">;</span><span class="s1"> 
+ 
+                    } 
+                }) 
+        )</span><span class="s0">;</span><span class="s1"> 
+ 
+ 
+</span><span class="s3">//       Canvas.Layout(GridBagLayout);</span><span class="s1"> 
+        </span><span class="s3">//generate lines</span><span class="s1"> 
+        </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">i = </span><span class="s2">0</span><span class="s0">; </span><span class="s1">i &lt; lines.length</span><span class="s0">; </span><span class="s1">i++) { 
+            lines[i] = </span><span class="s0">new </span><span class="s1">Line2D.Float( 
+                    i * </span><span class="s2">50</span><span class="s0">, </span><span class="s2">0</span><span class="s0">,</span><span class="s1"> 
+                    i * </span><span class="s2">50</span><span class="s0">, </span><span class="s2">4000</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+            lines2[i] = </span><span class="s0">new </span><span class="s1">Line2D.Float( 
+                    </span><span class="s2">0</span><span class="s0">, </span><span class="s1">i * </span><span class="s2">50</span><span class="s0">,</span><span class="s1"> 
+                    </span><span class="s2">4000</span><span class="s0">, </span><span class="s1">i * </span><span class="s2">50</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+        } 
+ 
+        addMouseMotionListener(</span><span class="s0">new </span><span class="s1">MouseMotionListener() { 
+            @Override 
+            </span><span class="s0">public void </span><span class="s1">mouseDragged(MouseEvent mouseEvent) { 
+            } 
+ 
+            @Override 
+            </span><span class="s0">public void </span><span class="s1">mouseMoved(MouseEvent mouseEvent) { 
+                </span><span class="s0">int </span><span class="s1">x = (mouseEvent.getX() - </span><span class="s2">100</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+                </span><span class="s0">int </span><span class="s1">y = (mouseEvent.getY() - </span><span class="s2">100</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+                </span><span class="s0">if </span><span class="s1">(mouseComponent != </span><span class="s0">null</span><span class="s1">) { 
+                    </span><span class="s0">if </span><span class="s1">(Main.lastButtonPressed.equals(</span><span class="s4">&quot;WRE&quot;</span><span class="s1">)) { 
+                        </span><span class="s0">if </span><span class="s1">(clicked) { 
+                            </span><span class="s0">if </span><span class="s1">((x % </span><span class="s2">50 </span><span class="s1">&lt; </span><span class="s2">15</span><span class="s1">) || x % </span><span class="s2">50 </span><span class="s1">&gt; </span><span class="s2">35</span><span class="s1">) { 
+                                x = </span><span class="s2">50 </span><span class="s1">* (Math.round((x + </span><span class="s2">25</span><span class="s1">) / </span><span class="s2">50</span><span class="s1">))</span><span class="s0">;</span><span class="s1"> 
+                            } 
+ 
+                            </span><span class="s0">if </span><span class="s1">((y % </span><span class="s2">50 </span><span class="s1">&lt; </span><span class="s2">15</span><span class="s1">) || y % </span><span class="s2">50 </span><span class="s1">&gt; </span><span class="s2">35</span><span class="s1">) { 
+                                y = </span><span class="s2">50 </span><span class="s1">* (Math.round((y + </span><span class="s2">25</span><span class="s1">) / </span><span class="s2">50</span><span class="s1">))</span><span class="s0">;</span><span class="s1"> 
+                            } 
+                            ((Wire) mouseComponent).setEndpoints(x2</span><span class="s0">, </span><span class="s1">y2</span><span class="s0">, </span><span class="s1">x +</span><span class="s2">100 </span><span class="s0">, </span><span class="s1">y +</span><span class="s2">100</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+                            mouseComponent.repaint()</span><span class="s0">;</span><span class="s1"> 
+                            Main.canvas1.repaint()</span><span class="s0">;</span><span class="s1"> 
+                            RepaintManager.currentManager(mouseComponent).markCompletelyClean(mouseComponent)</span><span class="s0">;</span><span class="s1"> 
+                        } 
+                    } </span><span class="s0">else </span><span class="s1">{ 
+                        </span><span class="s0">if </span><span class="s1">((x % </span><span class="s2">50 </span><span class="s1">&lt; </span><span class="s2">15</span><span class="s1">) || x % </span><span class="s2">50 </span><span class="s1">&gt; </span><span class="s2">35</span><span class="s1">) { 
+                            x = </span><span class="s2">50 </span><span class="s1">* (Math.round((x + </span><span class="s2">25</span><span class="s1">) / </span><span class="s2">50</span><span class="s1">))</span><span class="s0">;</span><span class="s1"> 
+                        } 
+ 
+                        </span><span class="s0">if </span><span class="s1">((y % </span><span class="s2">50 </span><span class="s1">&lt; </span><span class="s2">15</span><span class="s1">) || y % </span><span class="s2">50 </span><span class="s1">&gt; </span><span class="s2">35</span><span class="s1">) { 
+                            y = </span><span class="s2">50 </span><span class="s1">* (Math.round((y + </span><span class="s2">25</span><span class="s1">) / </span><span class="s2">50</span><span class="s1">))</span><span class="s0">;</span><span class="s1"> 
+                        } 
+                        mouseComponent.setLocation(x</span><span class="s0">, </span><span class="s1">y)</span><span class="s0">;</span><span class="s1"> 
+                        mouseComponent.repaint()</span><span class="s0">;</span><span class="s1"> 
+                        RepaintManager.currentManager(mouseComponent).markCompletelyClean(mouseComponent)</span><span class="s0">;</span><span class="s1"> 
+                    } 
+                } 
+            } 
+        })</span><span class="s0">;</span><span class="s1"> 
+        addMouseWheelListener(</span><span class="s0">new </span><span class="s1">MouseWheelListener() { 
+            </span><span class="s0">public void </span><span class="s1">mouseWheelMoved(MouseWheelEvent e) { 
+</span><span class="s3">//                updatePreferredSize(e.getWheelRotation(), e.getPoint());</span><span class="s1"> 
+ 
+            } 
+        })</span><span class="s0">;</span><span class="s1"> 
+        addMouseListener(</span><span class="s0">new </span><span class="s1">MouseListener() { 
+            @Override 
+            </span><span class="s0">public void </span><span class="s1">mouseClicked(MouseEvent mouseEvent) { 
+                String lst = Main.lastButtonPressed</span><span class="s0">;</span><span class="s1"> 
+                Integer x = (</span><span class="s2">50 </span><span class="s1">* (Math.round((mouseEvent.getX() + </span><span class="s2">25</span><span class="s1">) / </span><span class="s2">50</span><span class="s1">)))</span><span class="s0">;</span><span class="s1"> 
+                Integer y = (</span><span class="s2">50 </span><span class="s1">* (Math.round((mouseEvent.getY() + </span><span class="s2">25</span><span class="s1">) / </span><span class="s2">50</span><span class="s1">)))</span><span class="s0">;</span><span class="s1"> 
+                Component component = </span><span class="s0">null;</span><span class="s1"> 
+                </span><span class="s0">if </span><span class="s1">(</span><span class="s4">&quot;WRE&quot;</span><span class="s1">.equals(lst)) { 
+                    </span><span class="s0">if </span><span class="s1">(!clicked) { 
+                        x2 = x</span><span class="s0">;</span><span class="s1"> 
+                        y2 = y</span><span class="s0">;</span><span class="s1"> 
+                        clicked = </span><span class="s0">true;</span><span class="s1"> 
+                        </span><span class="s0">return;</span><span class="s1"> 
+                    } </span><span class="s0">else </span><span class="s1">{ 
+                        component = </span><span class="s0">new </span><span class="s1">Wire(Main.rotation</span><span class="s0">, </span><span class="s1">x2</span><span class="s0">, </span><span class="s1">y2</span><span class="s0">, </span><span class="s1">x</span><span class="s0">, </span><span class="s1">y)</span><span class="s0">;</span><span class="s1"> 
+                        x2 = </span><span class="s0">null;</span><span class="s1"> 
+                        y2 = </span><span class="s0">null;</span><span class="s1"> 
+                        x = </span><span class="s0">null;</span><span class="s1"> 
+                        y = </span><span class="s0">null;</span><span class="s1"> 
+                        clicked = </span><span class="s0">false;</span><span class="s1"> 
+                    } 
+                } </span><span class="s0">else if </span><span class="s1">(</span><span class="s4">&quot;RST&quot;</span><span class="s1">.equals(lst)) { 
+                    getResistance(Main.rotation</span><span class="s0">,</span><span class="s1">x</span><span class="s0">,</span><span class="s1">y</span><span class="s0">,</span><span class="s1">lst)</span><span class="s0">;</span><span class="s1"> 
+                    </span><span class="s0">return;</span><span class="s1"> 
+                } </span><span class="s0">else if </span><span class="s1">(</span><span class="s4">&quot;AMT&quot;</span><span class="s1">.equals(lst)) { 
+                    component = </span><span class="s0">new </span><span class="s1">Ammeter(Main.rotation</span><span class="s0">, </span><span class="s1">x</span><span class="s0">, </span><span class="s1">y)</span><span class="s0">;</span><span class="s1"> 
+                } </span><span class="s0">else if </span><span class="s1">(</span><span class="s4">&quot;VLT&quot;</span><span class="s1">.equals(lst)) { 
+                    component = </span><span class="s0">new </span><span class="s1">Voltmeter(Main.rotation</span><span class="s0">, </span><span class="s1">x</span><span class="s0">, </span><span class="s1">y)</span><span class="s0">;</span><span class="s1"> 
+                } </span><span class="s0">else if </span><span class="s1">(</span><span class="s4">&quot;BLB&quot;</span><span class="s1">.equals(lst)) { 
+                    getResistance(Main.rotation</span><span class="s0">,</span><span class="s1">x</span><span class="s0">,</span><span class="s1">y</span><span class="s0">, </span><span class="s1">lst)</span><span class="s0">;</span><span class="s1"> 
+                    </span><span class="s0">return;</span><span class="s1"> 
+                } </span><span class="s0">else if </span><span class="s1">(</span><span class="s4">&quot;VAR&quot;</span><span class="s1">.equals(lst)) { 
+                    component = </span><span class="s0">new </span><span class="s1">VariableResistor(Main.rotation</span><span class="s0">, </span><span class="s1">x</span><span class="s0">, </span><span class="s1">y)</span><span class="s0">;</span><span class="s1"> 
+                } </span><span class="s0">else if </span><span class="s1">(</span><span class="s4">&quot;CEL&quot;</span><span class="s1">.equals(lst)) { 
+                    getEMF(Main.rotation</span><span class="s0">,</span><span class="s1">x</span><span class="s0">,</span><span class="s1">y)</span><span class="s0">;</span><span class="s1"> 
+                    </span><span class="s0">return;</span><span class="s1"> 
+                } </span><span class="s0">else if </span><span class="s1">(</span><span class="s4">&quot;LDR&quot;</span><span class="s1">.equals(lst)) { 
+                    component = </span><span class="s0">new </span><span class="s1">LightDependentResistor(Main.rotation</span><span class="s0">, </span><span class="s1">x</span><span class="s0">, </span><span class="s1">y)</span><span class="s0">;</span><span class="s1"> 
+                } </span><span class="s0">else if </span><span class="s1">(</span><span class="s4">&quot;LED&quot;</span><span class="s1">.equals(lst)) { 
+                    getResistance(Main.rotation</span><span class="s0">,</span><span class="s1">x</span><span class="s0">,</span><span class="s1">y</span><span class="s0">, </span><span class="s1">lst)</span><span class="s0">;</span><span class="s1"> 
+                    </span><span class="s0">return;</span><span class="s1"> 
+                } </span><span class="s0">else if </span><span class="s1">(</span><span class="s4">&quot;CAP&quot;</span><span class="s1">.equals(lst)) { 
+                    component = </span><span class="s0">new </span><span class="s1">Capacitor(Main.rotation</span><span class="s0">, </span><span class="s1">x</span><span class="s0">, </span><span class="s1">y)</span><span class="s0">;</span><span class="s1"> 
+                } </span><span class="s0">else if </span><span class="s1">(</span><span class="s4">&quot;SWT&quot;</span><span class="s1">.equals(lst)) { 
+                    component = </span><span class="s0">new </span><span class="s1">Switch(Main.rotation</span><span class="s0">, </span><span class="s1">x</span><span class="s0">, </span><span class="s1">y)</span><span class="s0">;</span><span class="s1"> 
+                } </span><span class="s0">else if </span><span class="s1">(</span><span class="s4">&quot;SPD&quot;</span><span class="s1">.equals(lst)) { 
+                    component = </span><span class="s0">new </span><span class="s1">SinglePoleDoubleThrow(Main.rotation</span><span class="s0">, </span><span class="s1">x</span><span class="s0">, </span><span class="s1">y)</span><span class="s0">;</span><span class="s1"> 
+                } 
+                </span><span class="s0">else return;</span><span class="s1"> 
+                components.add(component)</span><span class="s0">;</span><span class="s1"> 
+                add(component)</span><span class="s0">;</span><span class="s1"> 
+                repaint()</span><span class="s0">;</span><span class="s1"> 
+                getcoords(mouseEvent.getX()</span><span class="s0">, </span><span class="s1">mouseEvent.getY())</span><span class="s0">;</span><span class="s1"> 
+            } 
+ 
+            @Override 
+            </span><span class="s0">public void </span><span class="s1">mousePressed(MouseEvent mouseEvent) { 
+            } 
+ 
+            @Override 
+            </span><span class="s0">public void </span><span class="s1">mouseReleased(MouseEvent mouseEvent) { 
+            } 
+ 
+            @Override 
+            </span><span class="s0">public void </span><span class="s1">mouseEntered(MouseEvent mouseEvent) { 
+            } 
+ 
+            @Override 
+            </span><span class="s0">public void </span><span class="s1">mouseExited(MouseEvent mouseEvent) { 
+            } 
+        })</span><span class="s0">;</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s0">private void </span><span class="s1">updatePreferredSize(</span><span class="s0">int </span><span class="s1">n</span><span class="s0">, </span><span class="s1">Point p) { 
+        Double MAX_SCALE = </span><span class="s2">10.0</span><span class="s0">;</span><span class="s1"> 
+        Double MIN_SCALE = </span><span class="s2">0.47</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">if </span><span class="s1">(n == </span><span class="s2">0</span><span class="s1">) </span><span class="s0">return;</span><span class="s1"> 
+        </span><span class="s0">double </span><span class="s1">d = (</span><span class="s0">double</span><span class="s1">) n * </span><span class="s2">1.08</span><span class="s0">;</span><span class="s1"> 
+        d = (n &gt; </span><span class="s2">0</span><span class="s1">) ? d : </span><span class="s2">1 </span><span class="s1">/ -d</span><span class="s0">;</span><span class="s1"> 
+ 
+        </span><span class="s0">int </span><span class="s1">w = (</span><span class="s0">int</span><span class="s1">) (getWidth() * d)</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">int </span><span class="s1">h = (</span><span class="s0">int</span><span class="s1">) (getHeight() * d)</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">double </span><span class="s1">newScale = scale * d</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">if </span><span class="s1">(newScale &gt; MAX_SCALE || newScale &lt; MIN_SCALE) </span><span class="s0">return;</span><span class="s1"> 
+        scale = newScale</span><span class="s0">;</span><span class="s1"> 
+        preferredSize.setSize(w</span><span class="s0">, </span><span class="s1">h)</span><span class="s0">;</span><span class="s1"> 
+ 
+        </span><span class="s0">int </span><span class="s1">offX = (</span><span class="s0">int</span><span class="s1">) (p.x * d) - p.x</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">int </span><span class="s1">offY = (</span><span class="s0">int</span><span class="s1">) (p.y * d) - p.y</span><span class="s0">;</span><span class="s1"> 
+        setLocation(getLocation().x - offX</span><span class="s0">, </span><span class="s1">getLocation().y - offY)</span><span class="s0">;</span><span class="s1"> 
+ 
+        getParent().doLayout()</span><span class="s0">;</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s0">public </span><span class="s1">Dimension getPreferredSize() { 
+        </span><span class="s0">return </span><span class="s1">preferredSize</span><span class="s0">;</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s0">private </span><span class="s1">Line2D l = </span><span class="s0">new </span><span class="s1">Line2D.Float()</span><span class="s0">;</span><span class="s1"> 
+ 
+    </span><span class="s0">public void </span><span class="s1">paintComponent(Graphics g) { 
+        </span><span class="s0">super</span><span class="s1">.paintComponent(g)</span><span class="s0">;</span><span class="s1"> 
+        g.setColor(</span><span class="s0">new </span><span class="s1">Color(</span><span class="s2">220</span><span class="s0">, </span><span class="s2">220</span><span class="s0">, </span><span class="s2">220</span><span class="s1">))</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">double </span><span class="s1">w = scale</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">double </span><span class="s1">h = scale</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">for </span><span class="s1">(Line2D line : lines) { 
+            l.setLine(line.getX1() * w</span><span class="s0">, </span><span class="s1">line.getY1() * w</span><span class="s0">,</span><span class="s1"> 
+                    line.getX2() * h</span><span class="s0">, </span><span class="s1">line.getY2() * h)</span><span class="s0">;</span><span class="s1"> 
+            ((Graphics2D) g).draw(l)</span><span class="s0">;</span><span class="s1"> 
+        } 
+        </span><span class="s0">for </span><span class="s1">(Line2D line : lines2) { 
+            l.setLine(line.getX1() * w</span><span class="s0">, </span><span class="s1">line.getY1() * w</span><span class="s0">,</span><span class="s1"> 
+                    line.getX2() * h</span><span class="s0">, </span><span class="s1">line.getY2() * h)</span><span class="s0">;</span><span class="s1"> 
+            ((Graphics2D) g).draw(l)</span><span class="s0">;</span><span class="s1"> 
+        } 
+    } 
+ 
+    </span><span class="s0">private void </span><span class="s1">getcoords(</span><span class="s0">float </span><span class="s1">xCoord</span><span class="s0">, float </span><span class="s1">yCoord) { 
+        String X1 = </span><span class="s4">&quot;&quot;</span><span class="s0">;</span><span class="s1"> 
+        String Y1 = </span><span class="s4">&quot;&quot;</span><span class="s0">;</span><span class="s1"> 
+        String X2 = </span><span class="s4">&quot;&quot;</span><span class="s0">;</span><span class="s1"> 
+        String Y2 = </span><span class="s4">&quot;&quot;</span><span class="s0">;</span><span class="s1"> 
+        String X3 = </span><span class="s4">&quot;&quot;</span><span class="s0">;</span><span class="s1"> 
+        String Y3 = </span><span class="s4">&quot;&quot;</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">if </span><span class="s1">(Main.lastButtonPressed.equals(</span><span class="s4">&quot;WRE&quot;</span><span class="s1">)) { 
+            X1 = Integer.toString((</span><span class="s0">int</span><span class="s1">) (Math.round(((((Wire) mouseComponent).xone)) / (scale * (</span><span class="s2">1 </span><span class="s1">/ </span><span class="s2">1.08</span><span class="s1">))) / </span><span class="s2">50</span><span class="s1">))</span><span class="s0">;</span><span class="s1"> 
+            Y1 = Integer.toString((</span><span class="s0">int</span><span class="s1">) (Math.round(((((Wire) mouseComponent).yone)) / (scale * (</span><span class="s2">1 </span><span class="s1">/ </span><span class="s2">1.08</span><span class="s1">))) / </span><span class="s2">50</span><span class="s1">))</span><span class="s0">;</span><span class="s1"> 
+            X2 = Integer.toString((</span><span class="s0">int</span><span class="s1">) (Math.round(((((Wire) mouseComponent).xtwo)) / (scale * (</span><span class="s2">1 </span><span class="s1">/ </span><span class="s2">1.08</span><span class="s1">))) / </span><span class="s2">50</span><span class="s1">))</span><span class="s0">;</span><span class="s1"> 
+            Y2 = Integer.toString((</span><span class="s0">int</span><span class="s1">) (Math.round(((((Wire) mouseComponent).ytwo)) / (scale * (</span><span class="s2">1 </span><span class="s1">/ </span><span class="s2">1.08</span><span class="s1">))) / </span><span class="s2">50</span><span class="s1">))</span><span class="s0">;</span><span class="s1"> 
+        } 
+        </span><span class="s0">if </span><span class="s1">(Main.lastButtonPressed.equals(</span><span class="s4">&quot;SPD&quot;</span><span class="s1">)) { 
+            </span><span class="s0">if </span><span class="s1">(Main.rotation == </span><span class="s2">1</span><span class="s1">) { 
+                X1 = Integer.toString((</span><span class="s0">int</span><span class="s1">) (Math.round((((xCoord) / (scale * (</span><span class="s2">1 </span><span class="s1">/ </span><span class="s2">1.08</span><span class="s1">))) / </span><span class="s2">50</span><span class="s1">) - </span><span class="s2">2</span><span class="s1">)))</span><span class="s0">;</span><span class="s1"> 
+                Y1 = Integer.toString((</span><span class="s0">int</span><span class="s1">) (Math.round((yCoord) / (scale * (</span><span class="s2">1 </span><span class="s1">/ </span><span class="s2">1.08</span><span class="s1">))) / </span><span class="s2">50</span><span class="s1">))</span><span class="s0">;</span><span class="s1"> 
+                X2 = Integer.toString((</span><span class="s0">int</span><span class="s1">) (Math.round((((xCoord) / (scale * (</span><span class="s2">1 </span><span class="s1">/ </span><span class="s2">1.08</span><span class="s1">))) / </span><span class="s2">50</span><span class="s1">) + </span><span class="s2">2</span><span class="s1">)))</span><span class="s0">;</span><span class="s1"> 
+                Y2 = Integer.toString((</span><span class="s0">int</span><span class="s1">) (Math.round((yCoord) / (scale * (</span><span class="s2">1 </span><span class="s1">/ </span><span class="s2">1.08</span><span class="s1">))) / </span><span class="s2">50</span><span class="s1">) - </span><span class="s2">1</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+                X3 = Integer.toString((</span><span class="s0">int</span><span class="s1">) (Math.round((((xCoord) / (scale * (</span><span class="s2">1 </span><span class="s1">/ </span><span class="s2">1.08</span><span class="s1">))) / </span><span class="s2">50</span><span class="s1">) + </span><span class="s2">2</span><span class="s1">)))</span><span class="s0">;</span><span class="s1"> 
+                Y3 = Integer.toString((</span><span class="s0">int</span><span class="s1">) (Math.round((yCoord) / (scale * (</span><span class="s2">1 </span><span class="s1">/ </span><span class="s2">1.08</span><span class="s1">))) / </span><span class="s2">50</span><span class="s1">) + </span><span class="s2">1</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+            } 
+            </span><span class="s0">if </span><span class="s1">(Main.rotation == </span><span class="s2">2</span><span class="s1">) { 
+                X1 = Integer.toString((</span><span class="s0">int</span><span class="s1">) (Math.round((xCoord) / (scale * (</span><span class="s2">1 </span><span class="s1">/ </span><span class="s2">1.08</span><span class="s1">))) / </span><span class="s2">50</span><span class="s1">))</span><span class="s0">;</span><span class="s1"> 
+                Y1 = Integer.toString((</span><span class="s0">int</span><span class="s1">) (Math.round((((yCoord) / (scale * (</span><span class="s2">1 </span><span class="s1">/ </span><span class="s2">1.08</span><span class="s1">))) / </span><span class="s2">50</span><span class="s1">) - </span><span class="s2">2</span><span class="s1">)))</span><span class="s0">;</span><span class="s1"> 
+                X2 = Integer.toString((</span><span class="s0">int</span><span class="s1">) (Math.round((((xCoord) / (scale * (</span><span class="s2">1 </span><span class="s1">/ </span><span class="s2">1.08</span><span class="s1">))) / </span><span class="s2">50</span><span class="s1">) - </span><span class="s2">1</span><span class="s1">)))</span><span class="s0">;</span><span class="s1"> 
+                Y2 = Integer.toString((</span><span class="s0">int</span><span class="s1">) (Math.round((((yCoord) / (scale * (</span><span class="s2">1 </span><span class="s1">/ </span><span class="s2">1.08</span><span class="s1">))) / </span><span class="s2">50</span><span class="s1">) + </span><span class="s2">2</span><span class="s1">)))</span><span class="s0">;</span><span class="s1"> 
+                X3 = Integer.toString((</span><span class="s0">int</span><span class="s1">) (Math.round((((xCoord) / (scale * (</span><span class="s2">1 </span><span class="s1">/ </span><span class="s2">1.08</span><span class="s1">))) / </span><span class="s2">50</span><span class="s1">) + </span><span class="s2">1</span><span class="s1">)))</span><span class="s0">;</span><span class="s1"> 
+                Y3 = Integer.toString((</span><span class="s0">int</span><span class="s1">) (Math.round((((yCoord) / (scale * (</span><span class="s2">1 </span><span class="s1">/ </span><span class="s2">1.08</span><span class="s1">))) / </span><span class="s2">50</span><span class="s1">) + </span><span class="s2">2</span><span class="s1">)))</span><span class="s0">;</span><span class="s1"> 
+            } 
+            </span><span class="s0">if </span><span class="s1">(Main.rotation == </span><span class="s2">3</span><span class="s1">) { 
+                X1 = Integer.toString((</span><span class="s0">int</span><span class="s1">) (Math.round((((xCoord) / (scale * (</span><span class="s2">1 </span><span class="s1">/ </span><span class="s2">1.08</span><span class="s1">))) / </span><span class="s2">50</span><span class="s1">) + </span><span class="s2">2</span><span class="s1">)))</span><span class="s0">;</span><span class="s1"> 
+                Y1 = Integer.toString((</span><span class="s0">int</span><span class="s1">) (Math.round((yCoord) / (scale * (</span><span class="s2">1 </span><span class="s1">/ </span><span class="s2">1.08</span><span class="s1">))) / </span><span class="s2">50</span><span class="s1">))</span><span class="s0">;</span><span class="s1"> 
+                X2 = Integer.toString((</span><span class="s0">int</span><span class="s1">) (Math.round((((xCoord) / (scale * (</span><span class="s2">1 </span><span class="s1">/ </span><span class="s2">1.08</span><span class="s1">))) / </span><span class="s2">50</span><span class="s1">) - </span><span class="s2">2</span><span class="s1">)))</span><span class="s0">;</span><span class="s1"> 
+                Y2 = Integer.toString((</span><span class="s0">int</span><span class="s1">) (Math.round((yCoord) / (scale * (</span><span class="s2">1 </span><span class="s1">/ </span><span class="s2">1.08</span><span class="s1">))) / </span><span class="s2">50</span><span class="s1">) - </span><span class="s2">1</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+                X3 = Integer.toString((</span><span class="s0">int</span><span class="s1">) (Math.round((((xCoord) / (scale * (</span><span class="s2">1 </span><span class="s1">/ </span><span class="s2">1.08</span><span class="s1">))) / </span><span class="s2">50</span><span class="s1">) - </span><span class="s2">2</span><span class="s1">)))</span><span class="s0">;</span><span class="s1"> 
+                Y3 = Integer.toString((</span><span class="s0">int</span><span class="s1">) (Math.round((yCoord) / (scale * (</span><span class="s2">1 </span><span class="s1">/ </span><span class="s2">1.08</span><span class="s1">))) / </span><span class="s2">50</span><span class="s1">) + </span><span class="s2">1</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+ 
+            } 
+            </span><span class="s0">if </span><span class="s1">(Main.rotation == </span><span class="s2">4</span><span class="s1">) { 
+                X1 = Integer.toString((</span><span class="s0">int</span><span class="s1">) (Math.round((xCoord) / (scale * (</span><span class="s2">1 </span><span class="s1">/ </span><span class="s2">1.08</span><span class="s1">))) / </span><span class="s2">50</span><span class="s1">))</span><span class="s0">;</span><span class="s1"> 
+                Y1 = Integer.toString((</span><span class="s0">int</span><span class="s1">) (Math.round((((yCoord) / (scale * (</span><span class="s2">1 </span><span class="s1">/ </span><span class="s2">1.08</span><span class="s1">))) / </span><span class="s2">50</span><span class="s1">) + </span><span class="s2">2</span><span class="s1">)))</span><span class="s0">;</span><span class="s1"> 
+                X2 = Integer.toString((</span><span class="s0">int</span><span class="s1">) (Math.round((((xCoord) / (scale * (</span><span class="s2">1 </span><span class="s1">/ </span><span class="s2">1.08</span><span class="s1">))) / </span><span class="s2">50</span><span class="s1">) + </span><span class="s2">1</span><span class="s1">)))</span><span class="s0">;</span><span class="s1"> 
+                Y2 = Integer.toString((</span><span class="s0">int</span><span class="s1">) (Math.round((((yCoord) / (scale * (</span><span class="s2">1 </span><span class="s1">/ </span><span class="s2">1.08</span><span class="s1">))) / </span><span class="s2">50</span><span class="s1">) - </span><span class="s2">2</span><span class="s1">)))</span><span class="s0">;</span><span class="s1"> 
+                X3 = Integer.toString((</span><span class="s0">int</span><span class="s1">) (Math.round((((xCoord) / (scale * (</span><span class="s2">1 </span><span class="s1">/ </span><span class="s2">1.08</span><span class="s1">))) / </span><span class="s2">50</span><span class="s1">) - </span><span class="s2">1</span><span class="s1">)))</span><span class="s0">;</span><span class="s1"> 
+                Y3 = Integer.toString((</span><span class="s0">int</span><span class="s1">) (Math.round((((yCoord) / (scale * (</span><span class="s2">1 </span><span class="s1">/ </span><span class="s2">1.08</span><span class="s1">))) / </span><span class="s2">50</span><span class="s1">) - </span><span class="s2">2</span><span class="s1">)))</span><span class="s0">;</span><span class="s1"> 
+            } 
+        } </span><span class="s0">else </span><span class="s1">{ 
+            </span><span class="s0">if </span><span class="s1">(Main.rotation % </span><span class="s2">2 </span><span class="s1">== </span><span class="s2">1</span><span class="s1">) { 
+                X1 = Integer.toString((</span><span class="s0">int</span><span class="s1">) (Math.round((((xCoord) / (scale * (</span><span class="s2">1 </span><span class="s1">/ </span><span class="s2">1.08</span><span class="s1">))) / </span><span class="s2">50</span><span class="s1">) - </span><span class="s2">2</span><span class="s1">)))</span><span class="s0">;</span><span class="s1"> 
+                Y1 = Integer.toString((</span><span class="s0">int</span><span class="s1">) (Math.round((yCoord) / (scale * (</span><span class="s2">1 </span><span class="s1">/ </span><span class="s2">1.08</span><span class="s1">))) / </span><span class="s2">50</span><span class="s1">))</span><span class="s0">;</span><span class="s1"> 
+                X2 = Integer.toString((</span><span class="s0">int</span><span class="s1">) (Math.round((((xCoord) / (scale * (</span><span class="s2">1 </span><span class="s1">/ </span><span class="s2">1.08</span><span class="s1">))) / </span><span class="s2">50</span><span class="s1">) + </span><span class="s2">2</span><span class="s1">)))</span><span class="s0">;</span><span class="s1"> 
+                Y2 = Integer.toString((</span><span class="s0">int</span><span class="s1">) (Math.round((yCoord) / (scale * (</span><span class="s2">1 </span><span class="s1">/ </span><span class="s2">1.08</span><span class="s1">))) / </span><span class="s2">50</span><span class="s1">))</span><span class="s0">;</span><span class="s1"> 
+            } 
+            </span><span class="s0">if </span><span class="s1">(Main.rotation % </span><span class="s2">2 </span><span class="s1">== </span><span class="s2">0</span><span class="s1">) { 
+                X1 = Integer.toString((</span><span class="s0">int</span><span class="s1">) (Math.round((xCoord) / (scale * (</span><span class="s2">1 </span><span class="s1">/ </span><span class="s2">1.08</span><span class="s1">))) / </span><span class="s2">50</span><span class="s1">))</span><span class="s0">;</span><span class="s1"> 
+                Y1 = Integer.toString((</span><span class="s0">int</span><span class="s1">) (Math.round((((yCoord) / (scale * (</span><span class="s2">1 </span><span class="s1">/ </span><span class="s2">1.08</span><span class="s1">))) / </span><span class="s2">50</span><span class="s1">) - </span><span class="s2">2</span><span class="s1">)))</span><span class="s0">;</span><span class="s1"> 
+                X2 = Integer.toString((</span><span class="s0">int</span><span class="s1">) (Math.round((xCoord) / (scale * (</span><span class="s2">1 </span><span class="s1">/ </span><span class="s2">1.08</span><span class="s1">))) / </span><span class="s2">50</span><span class="s1">))</span><span class="s0">;</span><span class="s1"> 
+                Y2 = Integer.toString((</span><span class="s0">int</span><span class="s1">) (Math.round((((yCoord) / (scale * (</span><span class="s2">1 </span><span class="s1">/ </span><span class="s2">1.08</span><span class="s1">))) / </span><span class="s2">50</span><span class="s1">) + </span><span class="s2">2</span><span class="s1">)))</span><span class="s0">;</span><span class="s1"> 
+            } 
+        } 
+        </span><span class="s0">if </span><span class="s1">(X1.length() &lt; </span><span class="s2">2</span><span class="s1">) { 
+            X1 = </span><span class="s4">&quot;0&quot; </span><span class="s1">+ X1</span><span class="s0">;</span><span class="s1"> 
+        } 
+        </span><span class="s0">if </span><span class="s1">(Y1.length() &lt; </span><span class="s2">2</span><span class="s1">) { 
+            Y1 = </span><span class="s4">&quot;0&quot; </span><span class="s1">+ Y1</span><span class="s0">;</span><span class="s1"> 
+        } 
+        </span><span class="s0">if </span><span class="s1">(X2.length() &lt; </span><span class="s2">2</span><span class="s1">) { 
+            X2 = </span><span class="s4">&quot;0&quot; </span><span class="s1">+ X2</span><span class="s0">;</span><span class="s1"> 
+        } 
+        </span><span class="s0">if </span><span class="s1">(Y2.length() &lt; </span><span class="s2">2</span><span class="s1">) { 
+            Y2 = </span><span class="s4">&quot;0&quot; </span><span class="s1">+ Y2</span><span class="s0">;</span><span class="s1"> 
+        } 
+        </span><span class="s0">if </span><span class="s1">(X3.length() &lt; </span><span class="s2">2</span><span class="s1">) { 
+            X3 = </span><span class="s4">&quot;0&quot; </span><span class="s1">+ X3</span><span class="s0">;</span><span class="s1"> 
+        } 
+        </span><span class="s0">if </span><span class="s1">(Y3.length() &lt; </span><span class="s2">2</span><span class="s1">) { 
+            Y3 = </span><span class="s4">&quot;0&quot; </span><span class="s1">+ Y3</span><span class="s0">;</span><span class="s1"> 
+        } 
+    } 
+ 
+    </span><span class="s0">private void </span><span class="s1">getResistance(</span><span class="s0">final int </span><span class="s1">r</span><span class="s0">, final int </span><span class="s1">xx</span><span class="s0">, final int </span><span class="s1">y</span><span class="s0">, final </span><span class="s1">String lst) { 
+        Component c</span><span class="s0">;</span><span class="s1"> 
+        x = </span><span class="s2">0</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">final </span><span class="s1">JFrame resFrame = </span><span class="s0">new </span><span class="s1">JFrame()</span><span class="s0">;</span><span class="s1"> 
+        resFrame.setVisible(</span><span class="s0">true</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+</span><span class="s3">//        resFrame.setLayout(null);</span><span class="s1"> 
+        resFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">final </span><span class="s1">JFormattedTextField textField = </span><span class="s0">new </span><span class="s1">JFormattedTextField(</span><span class="s4">&quot;&quot;</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+        textField.setSize(</span><span class="s2">50</span><span class="s0">, </span><span class="s2">60</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+        JLabel label = </span><span class="s0">new </span><span class="s1">JLabel(</span><span class="s4">&quot;Enter the Resistance of the component:&quot;</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">final </span><span class="s1">JPanel panel = </span><span class="s0">new </span><span class="s1">JPanel()</span><span class="s0">;</span><span class="s1"> 
+        resFrame.setSize(</span><span class="s2">500</span><span class="s0">, </span><span class="s2">70</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+        panel.add(label)</span><span class="s0">;</span><span class="s1"> 
+        panel.add(textField)</span><span class="s0">;</span><span class="s1"> 
+        resFrame.add(panel)</span><span class="s0">;</span><span class="s1"> 
+        valid = </span><span class="s0">true;</span><span class="s1"> 
+        textField.addActionListener(</span><span class="s0">new </span><span class="s1">ActionListener() { 
+            @Override 
+            </span><span class="s0">public void </span><span class="s1">actionPerformed(ActionEvent actionEvent) { 
+                </span><span class="s0">try </span><span class="s1">{ 
+                    x = Float.parseFloat(textField.getText())</span><span class="s0">;</span><span class="s1"> 
+                    resFrame.dispose()</span><span class="s0">;</span><span class="s1"> 
+                    addComponentWithResistance(r</span><span class="s0">,</span><span class="s1">xx</span><span class="s0">,</span><span class="s1">y</span><span class="s0">,</span><span class="s1">x</span><span class="s0">, </span><span class="s1">lst)</span><span class="s0">;</span><span class="s1"> 
+                } </span><span class="s0">catch </span><span class="s1">(NumberFormatException n) { 
+                    </span><span class="s0">if </span><span class="s1">(valid) { 
+                        panel.add(</span><span class="s0">new </span><span class="s1">JLabel(</span><span class="s4">&quot;Invalid&quot;</span><span class="s1">))</span><span class="s0">;</span><span class="s1"> 
+                        valid = </span><span class="s0">false;</span><span class="s1"> 
+                        panel.revalidate()</span><span class="s0">;</span><span class="s1"> 
+                        panel.repaint()</span><span class="s0">;</span><span class="s1"> 
+                    } 
+ 
+ 
+                } 
+            } 
+        })</span><span class="s0">;</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s0">private void </span><span class="s1">addComponentWithResistance(</span><span class="s0">int </span><span class="s1">r</span><span class="s0">, int </span><span class="s1">xx</span><span class="s0">, int </span><span class="s1">y</span><span class="s0">,float </span><span class="s1">x</span><span class="s0">, </span><span class="s1">String lst) { 
+        Component c</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">if </span><span class="s1">(</span><span class="s4">&quot;RST&quot;</span><span class="s1">.equals(lst)) { 
+            c = </span><span class="s0">new </span><span class="s1">Resistor(r</span><span class="s0">,</span><span class="s1">xx</span><span class="s0">,</span><span class="s1">y</span><span class="s0">,</span><span class="s1">x)</span><span class="s0">;</span><span class="s1"> 
+        } 
+        </span><span class="s0">else</span><span class="s1"> 
+            </span><span class="s0">if </span><span class="s1">(</span><span class="s4">&quot;BLB&quot;</span><span class="s1">.equals(lst)) { 
+                c = </span><span class="s0">new </span><span class="s1">Bulb(r</span><span class="s0">, </span><span class="s1">xx</span><span class="s0">, </span><span class="s1">y</span><span class="s0">, </span><span class="s1">x)</span><span class="s0">;</span><span class="s1"> 
+            } </span><span class="s0">else </span><span class="s1">{ 
+                c = </span><span class="s0">new </span><span class="s1">LightEmittingDiode(r</span><span class="s0">, </span><span class="s1">xx</span><span class="s0">, </span><span class="s1">y</span><span class="s0">, </span><span class="s1">x)</span><span class="s0">;</span><span class="s1"> 
+            } 
+ 
+        components.add(c)</span><span class="s0">;</span><span class="s1"> 
+        add(c)</span><span class="s0">;</span><span class="s1"> 
+        repaint()</span><span class="s0">;</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s0">private void </span><span class="s1">getEMF(</span><span class="s0">final int </span><span class="s1">r</span><span class="s0">, final int </span><span class="s1">xx</span><span class="s0">,final  int </span><span class="s1">y) { 
+        x = </span><span class="s2">0</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">final </span><span class="s1">JFrame resFrame = </span><span class="s0">new </span><span class="s1">JFrame()</span><span class="s0">;</span><span class="s1"> 
+        resFrame.setVisible(</span><span class="s0">true</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+</span><span class="s3">//        resFrame.setLayout(null);</span><span class="s1"> 
+        resFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">final </span><span class="s1">JFormattedTextField textField = </span><span class="s0">new </span><span class="s1">JFormattedTextField(</span><span class="s4">&quot;&quot;</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+        textField.setSize(</span><span class="s2">50</span><span class="s0">, </span><span class="s2">60</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+        JLabel label = </span><span class="s0">new </span><span class="s1">JLabel(</span><span class="s4">&quot;Enter the EMF of the component:&quot;</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">final </span><span class="s1">JPanel panel = </span><span class="s0">new </span><span class="s1">JPanel()</span><span class="s0">;</span><span class="s1"> 
+        resFrame.setSize(</span><span class="s2">500</span><span class="s0">, </span><span class="s2">70</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+        panel.add(label)</span><span class="s0">;</span><span class="s1"> 
+        panel.add(textField)</span><span class="s0">;</span><span class="s1"> 
+        resFrame.add(panel)</span><span class="s0">;</span><span class="s1"> 
+        valid = </span><span class="s0">true;</span><span class="s1"> 
+        textField.addActionListener(</span><span class="s0">new </span><span class="s1">ActionListener() { 
+            @Override 
+            </span><span class="s0">public void </span><span class="s1">actionPerformed(ActionEvent actionEvent) { 
+                </span><span class="s0">try </span><span class="s1">{ 
+                    x = Float.parseFloat(textField.getText())</span><span class="s0">;</span><span class="s1"> 
+                    resFrame.dispose()</span><span class="s0">;</span><span class="s1"> 
+                    addComponentWithEMF(r</span><span class="s0">,</span><span class="s1">xx</span><span class="s0">,</span><span class="s1">y</span><span class="s0">,</span><span class="s1">x)</span><span class="s0">;</span><span class="s1"> 
+                } </span><span class="s0">catch </span><span class="s1">(NumberFormatException n) { 
+                    </span><span class="s0">if </span><span class="s1">(valid) { 
+                        panel.add(</span><span class="s0">new </span><span class="s1">JLabel(</span><span class="s4">&quot;Invalid&quot;</span><span class="s1">))</span><span class="s0">;</span><span class="s1"> 
+                        valid = </span><span class="s0">false;</span><span class="s1"> 
+                        panel.revalidate()</span><span class="s0">;</span><span class="s1"> 
+                        panel.repaint()</span><span class="s0">;</span><span class="s1"> 
+                    } 
+ 
+ 
+                } 
+            } 
+        })</span><span class="s0">;</span><span class="s1"> 
+ 
+    } 
+    </span><span class="s0">private void </span><span class="s1">addComponentWithEMF(</span><span class="s0">int </span><span class="s1">r</span><span class="s0">, int </span><span class="s1">xx</span><span class="s0">, int </span><span class="s1">y</span><span class="s0">,float </span><span class="s1">x) { 
+        Component c</span><span class="s0">;</span><span class="s1"> 
+        c = </span><span class="s0">new </span><span class="s1">Cell(r</span><span class="s0">, </span><span class="s1">xx</span><span class="s0">, </span><span class="s1">y</span><span class="s0">, </span><span class="s1">x)</span><span class="s0">;</span><span class="s1"> 
+        components.add(c)</span><span class="s0">;</span><span class="s1"> 
+        add(c)</span><span class="s0">;</span><span class="s1"> 
+        repaint()</span><span class="s0">;</span><span class="s1"> 
+    } 
+ 
+ 
+    </span><span class="s0">private void </span><span class="s1">serialize(ArrayList comp) { 
+        </span><span class="s0">try </span><span class="s1">{ 
+            FileOutputStream fileOut = </span><span class="s0">new </span><span class="s1">FileOutputStream(</span><span class="s4">&quot;/Users/Ruben/Documents/serialized.ser&quot;</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+            ObjectOutputStream out = </span><span class="s0">new </span><span class="s1">ObjectOutputStream(fileOut)</span><span class="s0">;</span><span class="s1"> 
+            out.writeObject(comp)</span><span class="s0">;</span><span class="s1"> 
+ 
+            out.close()</span><span class="s0">;</span><span class="s1"> 
+            fileOut.close()</span><span class="s0">;</span><span class="s1"> 
+            System.out.printf(</span><span class="s4">&quot;Serialized data is saved in /Users/Ruben/Documents/serialized.ser&quot;</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+        } </span><span class="s0">catch </span><span class="s1">(IOException i) { 
+            i.printStackTrace()</span><span class="s0">;</span><span class="s1"> 
+        } 
+    } 
+ 
+    </span><span class="s0">private void </span><span class="s1">listData() { 
+        findCoords()</span><span class="s0">;</span><span class="s1"> 
+        coordListSize = coordList.size()</span><span class="s0">;</span><span class="s1"> 
+        createList(Adj1</span><span class="s0">, false</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+        Adj3 = </span><span class="s0">new </span><span class="s1">AdjacencyLists(</span><span class="s2">200</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+        m = findM()</span><span class="s0">;</span><span class="s1"> 
+        System.out.println(m)</span><span class="s0">;</span><span class="s1"> 
+        lhsMatrix = </span><span class="s0">new </span><span class="s1">Matrix(m</span><span class="s0">,</span><span class="s1">m)</span><span class="s0">;</span><span class="s1"> 
+        rhsMatrix = </span><span class="s0">new </span><span class="s1">Matrix(m</span><span class="s0">,</span><span class="s2">1</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+        Adj2 = </span><span class="s0">new </span><span class="s1">AdjacencyLists(Adj1)</span><span class="s0">;</span><span class="s1"> 
+        printList(Adj2)</span><span class="s0">;</span><span class="s1"> 
+        findLoop(</span><span class="s2">0</span><span class="s0">, </span><span class="s2">0</span><span class="s0">, </span><span class="s1">Adj2)</span><span class="s0">;</span><span class="s1"> 
+        getAllLoops()</span><span class="s0">;</span><span class="s1"> 
+        arrayofCoords()</span><span class="s0">;</span><span class="s1"> 
+        solveMatrices()</span><span class="s0">;</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s0">private void </span><span class="s1">findCoords() { 
+        </span><span class="s0">for </span><span class="s1">(Component c : components) { 
+            </span><span class="s0">if </span><span class="s1">(!coordList.containsCoord(c.xone</span><span class="s0">, </span><span class="s1">c.yone)) { 
+                coordList.add(</span><span class="s0">new </span><span class="s1">Coordinate(c.xone</span><span class="s0">, </span><span class="s1">c.yone))</span><span class="s0">;</span><span class="s1"> 
+            } 
+            </span><span class="s0">if </span><span class="s1">(!coordList.containsCoord(c.xtwo</span><span class="s0">, </span><span class="s1">c.ytwo)) { 
+                coordList.add(</span><span class="s0">new </span><span class="s1">Coordinate(c.xtwo</span><span class="s0">, </span><span class="s1">c.ytwo))</span><span class="s0">;</span><span class="s1"> 
+            } 
+        } 
+ 
+ 
+    } 
+    </span><span class="s0">private void </span><span class="s1">findCoordsOld() { 
+        </span><span class="s0">for </span><span class="s1">(Component c :components) { 
+            </span><span class="s0">if </span><span class="s1">(c </span><span class="s0">instanceof </span><span class="s1">Wire) { 
+                </span><span class="s0">int </span><span class="s1">xcoord1 = ((Wire) c).xone</span><span class="s0">;</span><span class="s1"> 
+                </span><span class="s0">int </span><span class="s1">ycoord1 = ((Wire) c).yone</span><span class="s0">;</span><span class="s1"> 
+                </span><span class="s0">int </span><span class="s1">xcoord2 = ((Wire) c).xtwo</span><span class="s0">;</span><span class="s1"> 
+                </span><span class="s0">int </span><span class="s1">ycoord2 = ((Wire) c).ytwo</span><span class="s0">;</span><span class="s1"> 
+</span><span class="s3">//                System.out.println(xcoord1 + &quot; &quot; + ycoord1 + &quot; &quot; + xcoord2 + &quot; &quot; + ycoord2);</span><span class="s1"> 
+                </span><span class="s0">if </span><span class="s1">(!(coordList.containsCoord(xcoord1</span><span class="s0">, </span><span class="s1">ycoord1))) { 
+                    coordList.add(</span><span class="s0">new </span><span class="s1">Coordinate(xcoord1</span><span class="s0">, </span><span class="s1">ycoord1))</span><span class="s0">;</span><span class="s1"> 
+                } 
+                </span><span class="s0">if </span><span class="s1">(!(coordList.containsCoord(xcoord2</span><span class="s0">, </span><span class="s1">ycoord2))) { 
+                    coordList.add(</span><span class="s0">new </span><span class="s1">Coordinate(xcoord2</span><span class="s0">, </span><span class="s1">ycoord2))</span><span class="s0">;</span><span class="s1"> 
+                } 
+            } </span><span class="s0">else </span><span class="s1">{ 
+                </span><span class="s0">int </span><span class="s1">xcoord = c.x </span><span class="s0">;</span><span class="s1"> 
+                </span><span class="s0">int </span><span class="s1">ycoord = c.y </span><span class="s0">;</span><span class="s1"> 
+                </span><span class="s0">if </span><span class="s1">(c.rotation % </span><span class="s2">2 </span><span class="s1">== </span><span class="s2">1</span><span class="s1">) { 
+                    </span><span class="s0">if </span><span class="s1">(!(coordList.containsCoord(xcoord - </span><span class="s2">100</span><span class="s0">, </span><span class="s1">ycoord))) { 
+                        coordList.add(</span><span class="s0">new </span><span class="s1">Coordinate(xcoord - </span><span class="s2">100</span><span class="s0">, </span><span class="s1">ycoord))</span><span class="s0">;</span><span class="s1"> 
+                    } 
+                    </span><span class="s0">if </span><span class="s1">(!coordList.containsCoord(xcoord + </span><span class="s2">100</span><span class="s0">, </span><span class="s1">ycoord)) { 
+                        coordList.add(</span><span class="s0">new </span><span class="s1">Coordinate(xcoord + </span><span class="s2">100</span><span class="s0">, </span><span class="s1">ycoord))</span><span class="s0">;</span><span class="s1"> 
+                    } 
+                } 
+                </span><span class="s0">if </span><span class="s1">(c.rotation % </span><span class="s2">2 </span><span class="s1">== </span><span class="s2">0</span><span class="s1">) { 
+                    </span><span class="s0">if </span><span class="s1">(!(coordList.containsCoord(xcoord</span><span class="s0">, </span><span class="s1">ycoord - </span><span class="s2">100</span><span class="s1">))) { 
+                        coordList.add(</span><span class="s0">new </span><span class="s1">Coordinate(xcoord</span><span class="s0">, </span><span class="s1">ycoord - </span><span class="s2">100</span><span class="s1">))</span><span class="s0">;</span><span class="s1"> 
+                    } 
+                    </span><span class="s0">if </span><span class="s1">(!(coordList.containsCoord(xcoord</span><span class="s0">, </span><span class="s1">ycoord + </span><span class="s2">100</span><span class="s1">))) { 
+                        coordList.add(</span><span class="s0">new </span><span class="s1">Coordinate(xcoord</span><span class="s0">, </span><span class="s1">ycoord + </span><span class="s2">100</span><span class="s1">))</span><span class="s0">;</span><span class="s1"> 
+                    } 
+                } 
+            } 
+        } 
+    } 
+ 
+    </span><span class="s0">private void </span><span class="s1">createList(AdjacencyLists x</span><span class="s0">, boolean </span><span class="s1">includeVoltmeters) { 
+        </span><span class="s0">for </span><span class="s1">(Component c : components) { 
+            x.addEdge(coordList.indexOf(</span><span class="s0">new </span><span class="s1">Coordinate(c.xone</span><span class="s0">, </span><span class="s1">c.yone))</span><span class="s0">,</span><span class="s1">coordList.indexOf(</span><span class="s0">new </span><span class="s1">Coordinate(c.xtwo</span><span class="s0">, </span><span class="s1">c.ytwo)))</span><span class="s0">;</span><span class="s1"> 
+            x.addEdge(coordList.indexOf(</span><span class="s0">new </span><span class="s1">Coordinate(c.xtwo</span><span class="s0">, </span><span class="s1">c.ytwo))</span><span class="s0">,</span><span class="s1">coordList.indexOf(</span><span class="s0">new </span><span class="s1">Coordinate(c.xone</span><span class="s0">, </span><span class="s1">c.yone)))</span><span class="s0">;</span><span class="s1"> 
+        } 
+    } 
+ 
+    </span><span class="s0">private void </span><span class="s1">createListOld(AdjacencyLists x</span><span class="s0">, boolean </span><span class="s1">includeVoltmeters) { 
+        </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">i = </span><span class="s2">0</span><span class="s0">; </span><span class="s1">i &lt; components.size()</span><span class="s0">; </span><span class="s1">i++) { 
+            </span><span class="s0">if </span><span class="s1">(components.get(i) </span><span class="s0">instanceof </span><span class="s1">Wire) { 
+                </span><span class="s0">int </span><span class="s1">xcoord1 = ((Wire) components.get(i)).xone</span><span class="s0">;</span><span class="s1"> 
+                </span><span class="s0">int </span><span class="s1">ycoord1 = ((Wire) components.get(i)).yone</span><span class="s0">;</span><span class="s1"> 
+                </span><span class="s0">int </span><span class="s1">xcoord2 = ((Wire) components.get(i)).xtwo</span><span class="s0">;</span><span class="s1"> 
+                </span><span class="s0">int </span><span class="s1">ycoord2 = ((Wire) components.get(i)).ytwo</span><span class="s0">;</span><span class="s1"> 
+</span><span class="s3">//                System.out.println(xcoord1 + &quot; &quot; + ycoord1 + &quot; &quot; + xcoord2 + &quot; &quot; + ycoord2);</span><span class="s1"> 
+                x.addEdge(coordList.indexOf(</span><span class="s0">new </span><span class="s1">Coordinate(xcoord1</span><span class="s0">, </span><span class="s1">ycoord1))</span><span class="s0">,</span><span class="s1"> 
+                        coordList.indexOf(</span><span class="s0">new </span><span class="s1">Coordinate(xcoord2</span><span class="s0">, </span><span class="s1">ycoord2)))</span><span class="s0">;</span><span class="s1"> 
+                x.addEdge(coordList.indexOf(</span><span class="s0">new </span><span class="s1">Coordinate(xcoord2</span><span class="s0">, </span><span class="s1">ycoord2))</span><span class="s0">,</span><span class="s1"> 
+                        coordList.indexOf(</span><span class="s0">new </span><span class="s1">Coordinate(xcoord1</span><span class="s0">, </span><span class="s1">ycoord1)))</span><span class="s0">;</span><span class="s1"> 
+            } </span><span class="s0">else</span><span class="s1"> 
+            </span><span class="s0">if </span><span class="s1">((components.get(i) </span><span class="s0">instanceof </span><span class="s1">Voltmeter &amp;&amp; includeVoltmeters) || !(components.get(i) </span><span class="s0">instanceof </span><span class="s1">Voltmeter)) { 
+                </span><span class="s0">int </span><span class="s1">xcoord = components.get(i).x</span><span class="s0">;</span><span class="s1"> 
+                </span><span class="s0">int </span><span class="s1">ycoord = components.get(i).y</span><span class="s0">;</span><span class="s1"> 
+                </span><span class="s0">if </span><span class="s1">(components.get(i).rotation % </span><span class="s2">2 </span><span class="s1">== </span><span class="s2">1</span><span class="s1">) { 
+                    Coordinate tempcoord1 = </span><span class="s0">new </span><span class="s1">Coordinate((xcoord - </span><span class="s2">100</span><span class="s1">)</span><span class="s0">, </span><span class="s1">ycoord)</span><span class="s0">;</span><span class="s1"> 
+                    Coordinate tempcoord2 = </span><span class="s0">new </span><span class="s1">Coordinate((xcoord + </span><span class="s2">100</span><span class="s1">)</span><span class="s0">, </span><span class="s1">ycoord)</span><span class="s0">;</span><span class="s1"> 
+                    x.addEdge(coordList.indexOf(tempcoord1)</span><span class="s0">,</span><span class="s1">coordList.indexOf(tempcoord2))</span><span class="s0">;</span><span class="s1"> 
+                    x.addEdge(coordList.indexOf(tempcoord2)</span><span class="s0">,</span><span class="s1">coordList.indexOf(tempcoord1))</span><span class="s0">;</span><span class="s1"> 
+ 
+                } 
+                </span><span class="s0">if </span><span class="s1">(components.get(i).rotation % </span><span class="s2">2 </span><span class="s1">== </span><span class="s2">0</span><span class="s1">) { 
+                    Coordinate tempcoord1 = </span><span class="s0">new </span><span class="s1">Coordinate(xcoord</span><span class="s0">, </span><span class="s1">(ycoord - </span><span class="s2">100</span><span class="s1">))</span><span class="s0">;</span><span class="s1"> 
+                    Coordinate tempcoord2 = </span><span class="s0">new </span><span class="s1">Coordinate(xcoord</span><span class="s0">, </span><span class="s1">(ycoord + </span><span class="s2">100</span><span class="s1">))</span><span class="s0">;</span><span class="s1"> 
+                    x.addEdge(coordList.indexOf(tempcoord1)</span><span class="s0">,</span><span class="s1">coordList.indexOf(tempcoord2))</span><span class="s0">;</span><span class="s1"> 
+                    x.addEdge(coordList.indexOf(tempcoord2)</span><span class="s0">,</span><span class="s1">coordList.indexOf(tempcoord1))</span><span class="s0">;</span><span class="s1"> 
+                } 
+            } 
+ 
+        } 
+        x.printList()</span><span class="s0">;</span><span class="s1"> 
+ 
+ } 
+ 
+    </span><span class="s0">private void </span><span class="s1">printList(AdjacencyLists x) { 
+        x.printList()</span><span class="s0">;</span><span class="s1"> 
+ 
+    } 
+ 
+    </span><span class="s0">private int </span><span class="s1">mostConnections() { 
+        </span><span class="s0">return </span><span class="s1">Adj1.mostConnections()</span><span class="s0">;</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s0">private int </span><span class="s1">findM() { 
+        visited = </span><span class="s0">new </span><span class="s1">Stack()</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">int </span><span class="s1">x = Adj1.getNode(</span><span class="s2">0</span><span class="s0">, </span><span class="s2">0</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+        m = Adj1.countEdges() - traverseTree(x) + </span><span class="s2">1</span><span class="s0">;</span><span class="s1"> 
+</span><span class="s3">//        System.out.println(m);</span><span class="s1"> 
+        </span><span class="s0">return </span><span class="s1">m</span><span class="s0">;</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s0">private int </span><span class="s1">traverseTree(</span><span class="s0">int </span><span class="s1">index) { 
+ 
+        visited.push(index)</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">int </span><span class="s1">n = </span><span class="s2">1</span><span class="s0">;</span><span class="s1"> 
+ 
+        </span><span class="s0">for </span><span class="s1">(Integer nextNode : Adj1.getAdjacentNodes(index)) { 
+            </span><span class="s0">if </span><span class="s1">(!visited.contains(nextNode)) { 
+                n += traverseTree(nextNode)</span><span class="s0">;</span><span class="s1"> 
+            } 
+        } 
+ 
+        </span><span class="s0">return </span><span class="s1">n</span><span class="s0">;</span><span class="s1"> 
+    } 
+ 
+</span><span class="s3">//    private void findLoops(int current, int end) {</span><span class="s1"> 
+</span><span class="s3">//        boolean fin = false;</span><span class="s1"> 
+</span><span class="s3">//        int i=0;</span><span class="s1"> 
+</span><span class="s3">//        if (current != end || path.size()==0) {</span><span class="s1"> 
+</span><span class="s3">//            visited.push(current);</span><span class="s1"> 
+</span><span class="s3">//            while (!fin) {</span><span class="s1"> 
+</span><span class="s3">//                int nextNode = Adj1.getNode(current,i);</span><span class="s1"> 
+</span><span class="s3">//                if (!visited.contains(nextNode)) {</span><span class="s1"> 
+</span><span class="s3">//                    path.push(nextNode);</span><span class="s1"> 
+</span><span class="s3">//                    findLoops(nextNode, end);</span><span class="s1"> 
+</span><span class="s3">//                    fin = true;</span><span class="s1"> 
+</span><span class="s3">//                }</span><span class="s1"> 
+</span><span class="s3">//                i++;</span><span class="s1"> 
+</span><span class="s3">//            }</span><span class="s1"> 
+</span><span class="s3">//        }</span><span class="s1"> 
+</span><span class="s3">//        return;</span><span class="s1"> 
+</span><span class="s3">//</span><span class="s1"> 
+</span><span class="s3">//    }</span><span class="s1"> 
+ 
+    </span><span class="s0">private void </span><span class="s1">getAllLoops(){ 
+        </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">i = </span><span class="s2">0</span><span class="s0">; </span><span class="s1">i &lt; coordListSize</span><span class="s0">; </span><span class="s1">i++) { 
+            </span><span class="s0">while </span><span class="s1">(Adj2.stackSize(i) &gt; </span><span class="s2">1 </span><span class="s1">&amp;&amp; pathList.size()&lt;m) { 
+                findLoop(i</span><span class="s0">, </span><span class="s1">i</span><span class="s0">, </span><span class="s1">Adj2)</span><span class="s0">;</span><span class="s1"> 
+                pathList.add(path)</span><span class="s0">;</span><span class="s1"> 
+                Adj2.removeEdge(path.get(</span><span class="s2">0</span><span class="s1">)</span><span class="s0">, </span><span class="s1">path.get(</span><span class="s2">1</span><span class="s1">))</span><span class="s0">;</span><span class="s1"> 
+                path = </span><span class="s0">new </span><span class="s1">Stack()</span><span class="s0">;</span><span class="s1"> 
+                </span><span class="s0">while </span><span class="s1">(Adj2.removeDeadEnds()) {} 
+            } 
+        } 
+    } 
+    </span><span class="s0">private boolean </span><span class="s1">findLoop(</span><span class="s0">int </span><span class="s1">current</span><span class="s0">, int </span><span class="s1">end</span><span class="s0">, </span><span class="s1">AdjacencyLists w) { 
+        </span><span class="s0">if </span><span class="s1">(current == end &amp;&amp; path.size() &gt; </span><span class="s2">2</span><span class="s1">) { 
+            </span><span class="s0">return true;</span><span class="s1"> 
+        } 
+        </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">i = </span><span class="s2">0</span><span class="s0">; </span><span class="s1">i &lt; w.getAdjacentNodes(current).size()</span><span class="s0">; </span><span class="s1">i++) { 
+            </span><span class="s0">int </span><span class="s1">nextNode = w.getNode(current</span><span class="s0">,</span><span class="s1">i)</span><span class="s0">;</span><span class="s1"> 
+            </span><span class="s0">if </span><span class="s1">(!path.contains(nextNode) &amp;&amp; !(nextNode == end &amp;&amp; path.size() &lt;= </span><span class="s2">2</span><span class="s1">)) { 
+                path.push(nextNode)</span><span class="s0">;</span><span class="s1"> 
+                </span><span class="s0">if </span><span class="s1">(findLoop(nextNode</span><span class="s0">, </span><span class="s1">end</span><span class="s0">,</span><span class="s1">w)) </span><span class="s0">return true;</span><span class="s1"> 
+                </span><span class="s0">else </span><span class="s1">{ 
+                    path.pop()</span><span class="s0">;</span><span class="s1"> 
+                } 
+            } 
+        } 
+        </span><span class="s0">return false;</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s0">public void </span><span class="s1">arrayofCoords() { 
+        Double tempVolt = </span><span class="s2">0.0</span><span class="s0">;</span><span class="s1"> 
+        Double tempRes  = </span><span class="s2">0.0</span><span class="s0">;</span><span class="s1"> 
+ 
+        </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">i=</span><span class="s2">0</span><span class="s0">; </span><span class="s1">i&lt;m</span><span class="s0">; </span><span class="s1">i++) { 
+            </span><span class="s0">for </span><span class="s1">(Component c : components) { 
+                Coordinate endPoint1 = c.getEndPoint1()</span><span class="s0">;</span><span class="s1"> 
+                Coordinate endPoint2 = c.getEndPoint2()</span><span class="s0">;</span><span class="s1"> 
+                </span><span class="s0">int </span><span class="s1">directioni = directionOfEdge(pathList.get(i)</span><span class="s0">,</span><span class="s1">endPoint1</span><span class="s0">, </span><span class="s1">endPoint2)</span><span class="s0">;</span><span class="s1"> 
+                System.out.println(</span><span class="s4">&quot;Processing component, emf = &quot; </span><span class="s1">+ c.emf + </span><span class="s4">&quot;, resistance = &quot; </span><span class="s1">+ c.resistance + </span><span class="s4">&quot;. Presence in loop &quot; </span><span class="s1">+ i + </span><span class="s4">&quot; is &quot; </span><span class="s1">+ directioni)</span><span class="s0">;</span><span class="s1"> 
+                </span><span class="s0">if </span><span class="s1">(directioni != </span><span class="s2">0</span><span class="s1">) { 
+                    </span><span class="s0">double </span><span class="s1">tV = c.emf*directioni</span><span class="s0">;</span><span class="s1"> 
+ 
+                   rhsMatrix.set(i</span><span class="s0">,</span><span class="s2">0</span><span class="s0">, </span><span class="s1">rhsMatrix.get(i</span><span class="s0">,</span><span class="s2">0</span><span class="s1">)+tV)</span><span class="s0">;</span><span class="s1"> 
+                    System.out.println(tV)</span><span class="s0">;</span><span class="s1"> 
+                    </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">j=</span><span class="s2">0</span><span class="s0">; </span><span class="s1">j&lt;m</span><span class="s0">; </span><span class="s1">j++) { 
+                        </span><span class="s0">double </span><span class="s1">tR = c.resistance</span><span class="s0">;</span><span class="s1"> 
+                        tempRes = directioni * directionOfEdge(pathList.get(j)</span><span class="s0">,</span><span class="s1">endPoint1</span><span class="s0">, </span><span class="s1">endPoint2) * tR</span><span class="s0">;</span><span class="s1"> 
+                        lhsMatrix.set(i</span><span class="s0">,</span><span class="s1">j</span><span class="s0">, </span><span class="s1">lhsMatrix.get(i</span><span class="s0">,</span><span class="s1">j)+tempRes)</span><span class="s0">;</span><span class="s1"> 
+                    } 
+                } 
+            } 
+        } 
+    } 
+ 
+    </span><span class="s0">private int </span><span class="s1">directionOfEdge (Stack&lt;Integer&gt; path</span><span class="s0">, </span><span class="s1">Coordinate c1</span><span class="s0">, </span><span class="s1">Coordinate c2) { 
+        </span><span class="s0">if </span><span class="s1">(coordList.get(path.get(</span><span class="s2">0</span><span class="s1">)).equals(c1) &amp;&amp; coordList.get(path.get(path.size()-</span><span class="s2">1</span><span class="s1">)).equals(c2)) </span><span class="s0">return </span><span class="s1">-</span><span class="s2">1</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">if </span><span class="s1">(coordList.get(path.get(</span><span class="s2">0</span><span class="s1">)).equals(c2) &amp;&amp; coordList.get(path.get(path.size()-</span><span class="s2">1</span><span class="s1">)).equals(c1)) </span><span class="s0">return </span><span class="s2">1</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">i=</span><span class="s2">0</span><span class="s0">; </span><span class="s1">i&lt;path.size()</span><span class="s0">; </span><span class="s1">i++) { 
+            </span><span class="s0">if </span><span class="s1">(coordList.get(path.get(i)).equals(c1)) { 
+                </span><span class="s0">if </span><span class="s1">(i!=</span><span class="s2">0 </span><span class="s1">&amp;&amp; coordList.get(path.get(i-</span><span class="s2">1</span><span class="s1">)).equals(c2)) </span><span class="s0">return </span><span class="s1">-</span><span class="s2">1</span><span class="s0">;</span><span class="s1"> 
+                </span><span class="s0">if </span><span class="s1">(i&lt;path.size()-</span><span class="s2">1 </span><span class="s1">&amp;&amp; coordList.get(path.get(i+</span><span class="s2">1</span><span class="s1">)).equals(c2)) </span><span class="s0">return </span><span class="s2">1</span><span class="s0">;</span><span class="s1"> 
+            } 
+        } 
+        </span><span class="s0">return </span><span class="s2">0</span><span class="s0">;</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s0">private void </span><span class="s1">solveCurrents(Matrix currents) { 
+        </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">i=</span><span class="s2">0</span><span class="s0">; </span><span class="s1">i&lt;m</span><span class="s0">; </span><span class="s1">i++) { 
+            </span><span class="s0">for </span><span class="s1">(Component c : components) { 
+ 
+                Coordinate endPoint1 = c.getEndPoint1()</span><span class="s0">;</span><span class="s1"> 
+                Coordinate endPoint2 = c.getEndPoint2()</span><span class="s0">;</span><span class="s1"> 
+                </span><span class="s0">int </span><span class="s1">directioni = directionOfEdge(pathList.get(i)</span><span class="s0">, </span><span class="s1">endPoint1</span><span class="s0">, </span><span class="s1">endPoint2)</span><span class="s0">;</span><span class="s1"> 
+                c.setCurrent(c.getCurrent() + directioni * currents.get(i</span><span class="s0">, </span><span class="s2">0</span><span class="s1">))</span><span class="s0">;</span><span class="s1"> 
+ 
+            } 
+        } 
+    } 
+ 
+    </span><span class="s0">private void </span><span class="s1">solveVoltmeters() { 
+        ArrayList&lt;Integer&gt; listOfVoltmeters = </span><span class="s0">new </span><span class="s1">ArrayList&lt;Integer&gt;()</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">boolean </span><span class="s1">presOfVolt = </span><span class="s0">false;</span><span class="s1"> 
+        </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">i=</span><span class="s2">0</span><span class="s0">; </span><span class="s1">i&lt;components.size()</span><span class="s0">; </span><span class="s1">i++) { 
+            </span><span class="s0">if </span><span class="s1">(components.get(i) </span><span class="s0">instanceof </span><span class="s1">Voltmeter) { 
+                presOfVolt = </span><span class="s0">true;</span><span class="s1"> 
+                listOfVoltmeters.add(i)</span><span class="s0">;</span><span class="s1"> 
+            } 
+        } 
+        System.out.println(</span><span class="s4">&quot;Number of Voltmeters is : &quot; </span><span class="s1">+ listOfVoltmeters.size())</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">if </span><span class="s1">(presOfVolt) {calculateVoltages(listOfVoltmeters)</span><span class="s0">;</span><span class="s1">} 
+    } 
+ 
+    </span><span class="s0">public void </span><span class="s1">calculateVoltages(ArrayList&lt;Integer&gt; list) { 
+        createList(Adj3</span><span class="s0">, true</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+ 
+        </span><span class="s0">int </span><span class="s1">tc1=</span><span class="s2">0</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">int </span><span class="s1">tc2=</span><span class="s2">0</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">i = </span><span class="s2">0</span><span class="s0">; </span><span class="s1">i &lt; list.size()</span><span class="s0">; </span><span class="s1">i++) { 
+ 
+            Component c = components.get(list.get(i))</span><span class="s0">;</span><span class="s1"> 
+            Coordinate tempcoord1 = c.getEndPoint1()</span><span class="s0">;</span><span class="s1"> 
+            Coordinate tempcoord2 = c.getEndPoint2()</span><span class="s0">;</span><span class="s1"> 
+</span><span class="s3">//            System.out.println(&quot;Want &quot; + tempcoord1.getX() + &quot;,&quot; + tempcoord1.getY());</span><span class="s1"> 
+</span><span class="s3">//            System.out.println(&quot;And &quot; + tempcoord2.getX() + &quot;,&quot; + tempcoord2.getY());</span><span class="s1"> 
+ 
+ 
+            </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">j = </span><span class="s2">0</span><span class="s0">; </span><span class="s1">j &lt; coordList.size()</span><span class="s0">; </span><span class="s1">j++) { 
+                System.out.println(j)</span><span class="s0">;</span><span class="s1"> 
+                System.out.println(coordList.get(j).getX()+</span><span class="s4">&quot;,&quot;</span><span class="s1">+coordList.get(j).getY())</span><span class="s0">;</span><span class="s1"> 
+                </span><span class="s0">if </span><span class="s1">(coordList.get(j).equals(tempcoord1)) { 
+                    tc1 = j</span><span class="s0">;</span><span class="s1"> 
+                } 
+                </span><span class="s0">if </span><span class="s1">(coordList.get(j).equals(tempcoord2)) { 
+                    tc2 = j</span><span class="s0">;</span><span class="s1"> 
+                } 
+            } 
+ 
+            System.out.println(tc1 + </span><span class="s4">&quot; ... &quot; </span><span class="s1">+ tc2)</span><span class="s0">;</span><span class="s1"> 
+            findLoop(tc1</span><span class="s0">, </span><span class="s1">tc2</span><span class="s0">, </span><span class="s1">Adj3)</span><span class="s0">;</span><span class="s1"> 
+            System.out.println(</span><span class="s4">&quot;CHECKPOINT&quot;</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+            </span><span class="s0">double </span><span class="s1">PD = </span><span class="s2">0</span><span class="s0">;</span><span class="s1"> 
+            System.out.println(path.size())</span><span class="s0">;</span><span class="s1"> 
+            </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">k = </span><span class="s2">0</span><span class="s0">; </span><span class="s1">k &lt; path.size()</span><span class="s0">; </span><span class="s1">k++) { 
+                System.out.println(</span><span class="s4">&quot;CHECKPOINT&quot;</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+                </span><span class="s0">int </span><span class="s1">x = ((coordList.get(path.get(k)).getX() + coordList.get(path.get((k + </span><span class="s2">1</span><span class="s1">) % path.size())).getX()) / </span><span class="s2">2</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+                </span><span class="s0">int </span><span class="s1">y = ((coordList.get(path.get(k)).getY() + coordList.get(path.get((k + </span><span class="s2">1</span><span class="s1">) % path.size())).getY()) / </span><span class="s2">2</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+                </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">l = </span><span class="s2">0</span><span class="s0">; </span><span class="s1">l &lt; components.size()</span><span class="s0">; </span><span class="s1">l++) { 
+                    </span><span class="s0">if </span><span class="s1">(components.get(l).x == x &amp;&amp; components.get(l).y == y) { 
+                        PD += components.get(l).getPotentialDifference()</span><span class="s0">;</span><span class="s1"> 
+                        PD += components.get(l).emf</span><span class="s0">;</span><span class="s1"> 
+                        System.out.println(</span><span class="s4">&quot;this PD = &quot; </span><span class="s1">+ components.get(l).getPotentialDifference())</span><span class="s0">;</span><span class="s1"> 
+                    } 
+                } 
+                System.out.println(</span><span class="s4">&quot;Voltmeter says PD = &quot; </span><span class="s1">+ PD)</span><span class="s0">;</span><span class="s1"> 
+ 
+            } 
+            Voltmeter voltmeter = (Voltmeter)components.get(list.get(i))</span><span class="s0">;</span><span class="s1"> 
+ 
+            voltmeter.setPD(PD)</span><span class="s0">;</span><span class="s1"> 
+            repaint()</span><span class="s0">;</span><span class="s1"> 
+        } 
+ 
+ 
+    } 
+ 
+    </span><span class="s0">public void </span><span class="s1">solveMatrices() { 
+ 
+        System.out.println(</span><span class="s4">&quot;Determinant = &quot; </span><span class="s1">+ lhsMatrix.det())</span><span class="s0">;</span><span class="s1"> 
+        Matrix ans = lhsMatrix.solve(rhsMatrix)</span><span class="s0">;</span><span class="s1"> 
+        solveCurrents(ans)</span><span class="s0">;</span><span class="s1"> 
+        solveVoltmeters()</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">i=</span><span class="s2">0</span><span class="s0">; </span><span class="s1">i&lt;m</span><span class="s0">; </span><span class="s1">i++) { 
+            System.out.println(</span><span class="s4">&quot;current for loop &quot; </span><span class="s1">+ (i+</span><span class="s2">1</span><span class="s1">) + </span><span class="s4">&quot; = &quot; </span><span class="s1">+ (ans.get(i</span><span class="s0">, </span><span class="s2">0</span><span class="s1">)))</span><span class="s0">;</span><span class="s1"> 
+        } 
+        repaint()</span><span class="s0">;</span><span class="s1"> 
+ 
+    } 
+}</span></pre>
+</body>
+</html>

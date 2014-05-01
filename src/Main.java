@@ -16,16 +16,18 @@ import java.util.ArrayList;
 
 public class Main {
 
+
     static JFrame mainFrame;
     static JPanel panel1;
     static JPanel panel2;
     static JPanel panel3;
-    static String[] names = {"WIRE", "RESISTOR", "AMMETER", "VOLTMETER", "BULB", "VARIABLE RESISTOR", "CELL", "LDR", "LED", "CAPACITOR", "SWITCH", "SPDT"};
-    static String[] shortName = {"WRE", "RST", "AMT", "VLT", "BLB", "VAR", "CEL", "LDR", "LED", "CAP", "SWT", "SPD"};
+    static String[] names = {"WIRE", "RESISTOR", "AMMETER", "VOLTMETER", "BULB", "VARIABLE RESISTOR", "CELL", "LDR", "LED"/*, "CAPACITOR", "SWITCH", "SPDT"*/};
+    static String[] shortName = {"WRE", "RST", "AMT", "VLT", "BLB", "VAR", "CEL", "LDR", "LED"/*, "CAP", "SWT", "SPD"*/};
 //    static Boolean componentSelected = false;
     public static String lastButtonPressed = null;
     public static int rotation = 1;
     static Canvas canvas1 = null;
+    static JLabel errorLabel;
 
 
 
@@ -35,13 +37,13 @@ public class Main {
 
     }
     public static void init() throws IOException {
-        mainFrame = new JFrame("Circuit Simulation, Yo");
+        mainFrame = new JFrame("Circuit Sim");
         mainFrame.setVisible(true);
         mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         mainFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         mainFrame.setLayout(null);
-
         panel1 = new JPanel();
+        panel1.setLayout(new BoxLayout(panel1, BoxLayout.Y_AXIS));
         panel2 = new JPanel();
         panel3 = new JPanel();
         mainFrame.add(panel1);
@@ -59,9 +61,12 @@ public class Main {
         panel1.setVisible(true);
         panel2.setVisible(false);
         panel3.setVisible(false);
-        JButton push1 =  new JButton("Create New Project");
+        errorLabel = new JLabel();
+        JButton push1 =  new JButton("CREATE NEW PROJECT");
+        push1.setFont(new Font("Lucida Sans", Font.PLAIN, 30));
         push1.setAlignmentX(JComponent.CENTER_ALIGNMENT);
-
+        push1.setSize(200,400);
+        push1.setLocation(0,0);
         push1.addActionListener(
                 new ActionListener() {
                     @Override
@@ -72,13 +77,16 @@ public class Main {
                     }
                 }
         );
+        panel1.add(Box.createRigidArea(new Dimension(20,mainFrame.getHeight()/2 -150)));
         panel1.add(push1);
+        panel1.add(Box.createRigidArea(new Dimension(20,100)));
         push1.setFocusPainted(false);
         push1.setContentAreaFilled(false);
         push1.setBorderPainted(false);
         push1.setRolloverEnabled(false);
         push1.setVisible(true);
-        JButton push2 =  new JButton("Open Saved Project");
+        JButton push2 =  new JButton("OPEN SAVED PROJECT");
+        push2.setFont(new Font("Lucida Sans", Font.PLAIN, 30));
         push2.setAlignmentX(JComponent.CENTER_ALIGNMENT);
 
         push2.addActionListener(
@@ -95,7 +103,8 @@ public class Main {
         push2.setContentAreaFilled(false);
         push2.setBorderPainted(false);
         push2.setRolloverEnabled(false);
-        JButton push3 =  new JButton("Thwack");
+        JButton push3 =  new JButton("BACK");
+        push3.setFont(new Font("Lucida Sans", Font.PLAIN, 20));
         push3.addActionListener(
                 new ActionListener() {
                     @Override
@@ -111,7 +120,8 @@ public class Main {
         push3.setBorderPainted(false);
         push3.setRolloverEnabled(false);
 
-        JButton push7 = new JButton("O-Pope-n");
+        JButton push7 = new JButton("OPEN");
+        push7.setFont(new Font("Lucida Sans", Font.PLAIN, 20));
         panel3.add(push7);
         push7.addActionListener(
                 (new ActionListener() {
@@ -122,6 +132,10 @@ public class Main {
                     }
                 })
         );
+        push7.setFocusPainted(false);
+        push7.setContentAreaFilled(false);
+        push7.setBorderPainted(false);
+        push7.setRolloverEnabled(false);
 
 
         JPanel CompCanvas = new JPanel();
@@ -134,7 +148,7 @@ public class Main {
 
         panel2.setLayout(new BorderLayout());
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-        splitPane.setEnabled(false);
+        splitPane.setEnabled(true);
         JSplitPane splitPane2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
         splitPane.setRightComponent(new JScrollPane(canvas1));
         splitPane.setLeftComponent(splitPane2);
@@ -154,8 +168,8 @@ public class Main {
             x.setContentAreaFilled(false);
             x.setBorderPainted(false);
             x.setRolloverEnabled(false);
-            x.setFont(new Font("Verdana", Font.PLAIN, 20));
-            x.setMaximumSize(new Dimension(900, 100));
+            x.setFont(new Font("Lucida Sans", Font.PLAIN, 20));
+            x.setMaximumSize(new Dimension(2000, 100));
             x.setMinimumSize(new Dimension(200, 100));
             x.addActionListener(
                     new ActionListener() {
@@ -169,22 +183,24 @@ public class Main {
                             }
                             if (component.equals("WRE")) {
                                 canvas1.mouseComponent = new Wire(Main.rotation, 0, 0, 0, 0);
+
+                                //canvas1.mouseComponent = new Resistor(Main.rotation, 0, 0);
                             }  else if (component.equals("RST")) {
-                                canvas1.mouseComponent = new Resistor(Main.rotation, 0, 0);
+                                canvas1.mouseComponent = new Resistor(Main.rotation, 0, 0,0);
                             } else if (component.equals("AMT")) {
                                 canvas1.mouseComponent = new Ammeter(Main.rotation, 0,0);
                             } else if (component.equals("VLT")) {
                                 canvas1.mouseComponent = new Voltmeter(Main.rotation, 0,0);
                             } else if (component.equals("BLB")) {
-                                canvas1.mouseComponent = new Bulb(Main.rotation, 0,0);
+                                canvas1.mouseComponent = new Bulb(Main.rotation, 0,0,0);
                             } else if (component.equals("VAR")) {
                                 canvas1.mouseComponent = new VariableResistor(Main.rotation, 0,0);
                             } else if (component.equals("CEL")) {
-                                canvas1.mouseComponent = new Cell(Main.rotation, 0,0);
+                                canvas1.mouseComponent = new Cell(Main.rotation, 0,0,0);
                             } else if (component.equals("LDR")) {
                                 canvas1.mouseComponent = new LightDependentResistor(Main.rotation, 0,0);
                             } else if (component.equals("LED")) {
-                                canvas1.mouseComponent = new LightEmittingDiode(Main.rotation, 0,0);
+                                canvas1.mouseComponent = new LightEmittingDiode(Main.rotation, 0,0,0);
                             } else if (component.equals("CAP")) {
                                 canvas1.mouseComponent = new Capacitor(Main.rotation, 0,0);
                             } else if (component.equals("SWT")) {
@@ -212,13 +228,17 @@ public class Main {
                     }
             );
         }
+
+        spanel3.add(errorLabel);
+        errorLabel.setVisible(true);
+        errorLabel.setLocation(0,0);
     }
 
     public static void deserialize() {
         int x;
         try
         {
-            FileInputStream fileIn = new FileInputStream("/Users/Ruben/Desktop/serialized.ser");
+            FileInputStream fileIn = new FileInputStream("/Users/Ruben/Documents/fool.ser");
             ObjectInputStream in = new ObjectInputStream(fileIn);
             Canvas.components = (ArrayList) in.readObject();
 
@@ -235,11 +255,11 @@ public class Main {
             c.printStackTrace();
             return;
         }
-        System.out.println("Deserialized String...");
+        errorLabel.setText("Deserialized String...");
         panel3.setVisible(false);
         panel2.setVisible(true);
         for (int i=0; i<x; i++) {
-            Canvas.components.get(i).setLocation((Canvas.components.get(i).getX()), Canvas.components.get(i).getY());
+            Canvas.components.get(i).setLocation((Canvas.components.get(i).x-100), Canvas.components.get(i).y-100);
             canvas1.add(Canvas.components.get(i));
         }
 

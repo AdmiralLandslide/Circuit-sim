@@ -6,8 +6,8 @@ import java.awt.*;
 public class LightEmittingDiode extends Component {
 
 
-    public LightEmittingDiode(int rotation,int x, int y) {
-        super(rotation,x-100,y-100,200,200);
+    public LightEmittingDiode(int rotation,int x, int y, float resistance) {
+        super(rotation,x-100,y-100,200,200,resistance,0);
 
     }
 
@@ -71,7 +71,19 @@ public class LightEmittingDiode extends Component {
             g.drawLine(135, 88, 125, 88);
             g.drawLine(135, 88, 129, 96);
         }
-
+        if (rotation % 2 == 1) {
+            if (resistance!=0) {
+                g.drawString(resistance + "Ω", 85, 150);
+            }
+        }
+        if (rotation % 2 == 0) {
+            if (resistance!=0) {
+                g.drawString(resistance + "Ω", 35, 105);
+            }
+        }
+        if (getCurrent() != 0) {
+            g.drawOval(0, 0, ((int) (getCurrent()) * 10),  ((int) (getCurrent()) * 10));
+        }
     }
 }
 

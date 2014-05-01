@@ -1,0 +1,54 @@
+<html>
+<head>
+<title>Capacitor.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: rgb(0,0,0); font-weight: normal; font-style: normal; }
+.s0 { color: rgb(204,120,50); }
+.s1 { color: rgb(169,183,198); }
+.s2 { color: rgb(98,151,85); }
+.s3 { color: rgb(104,151,187); }
+</style>
+</head>
+<BODY BGCOLOR="#2b2b2b">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#C0C0C0" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+Capacitor.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+
+<span class="s0">import </span><span class="s1">java.awt.*</span><span class="s0">;</span><span class="s1"> 
+ 
+</span><span class="s2">/** 
+ * Created by Ruben on 04/02/2014. 
+ */</span><span class="s1"> 
+</span><span class="s0">public class </span><span class="s1">Capacitor </span><span class="s0">extends </span><span class="s1">Component { 
+ 
+ 
+    </span><span class="s0">public </span><span class="s1">Capacitor(</span><span class="s0">int </span><span class="s1">rotation</span><span class="s0">,int </span><span class="s1">x</span><span class="s0">, int </span><span class="s1">y) { 
+        </span><span class="s0">super</span><span class="s1">(rotation</span><span class="s0">,</span><span class="s1">x-</span><span class="s3">100</span><span class="s0">,</span><span class="s1">y-</span><span class="s3">100</span><span class="s0">,</span><span class="s3">200</span><span class="s0">,</span><span class="s3">200</span><span class="s0">,</span><span class="s3">0</span><span class="s0">,</span><span class="s3">0</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+    } 
+ 
+ 
+    @Override 
+    </span><span class="s0">protected void </span><span class="s1">paintComponent(Graphics g) { 
+        </span><span class="s0">super</span><span class="s1">.paintComponent(g)</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">if </span><span class="s1">(rotation % </span><span class="s3">2 </span><span class="s1">== </span><span class="s3">1</span><span class="s1">) { 
+            g.drawLine(</span><span class="s3">0</span><span class="s0">, </span><span class="s3">100</span><span class="s0">, </span><span class="s3">95</span><span class="s0">, </span><span class="s3">100</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+            g.drawLine(</span><span class="s3">105</span><span class="s0">, </span><span class="s3">100</span><span class="s0">, </span><span class="s3">200</span><span class="s0">, </span><span class="s3">100</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+            g.drawLine(</span><span class="s3">95</span><span class="s0">, </span><span class="s3">75</span><span class="s0">, </span><span class="s3">95</span><span class="s0">, </span><span class="s3">125</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+            g.drawLine(</span><span class="s3">105</span><span class="s0">, </span><span class="s3">75</span><span class="s0">, </span><span class="s3">105</span><span class="s0">, </span><span class="s3">125</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+        } 
+        </span><span class="s0">if </span><span class="s1">(rotation % </span><span class="s3">2 </span><span class="s1">== </span><span class="s3">0</span><span class="s1">) { 
+            g.drawLine(</span><span class="s3">100</span><span class="s0">, </span><span class="s3">0</span><span class="s0">, </span><span class="s3">100</span><span class="s0">, </span><span class="s3">95</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+            g.drawLine(</span><span class="s3">100</span><span class="s0">, </span><span class="s3">105</span><span class="s0">, </span><span class="s3">100</span><span class="s0">, </span><span class="s3">200</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+            g.drawLine(</span><span class="s3">75</span><span class="s0">, </span><span class="s3">95</span><span class="s0">, </span><span class="s3">125</span><span class="s0">, </span><span class="s3">95</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+            g.drawLine(</span><span class="s3">75</span><span class="s0">, </span><span class="s3">105</span><span class="s0">, </span><span class="s3">125</span><span class="s0">, </span><span class="s3">105</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+        } 
+    } 
+} 
+ 
+</span></pre>
+</body>
+</html>
